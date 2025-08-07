@@ -4,8 +4,8 @@ export default class Ship {
     this.numOfHits = 0;
     this.isHit = false;
     this.isSunked = false;
-    this.placedCoords = [];
-    this.hitCoords = [];
+    this.placedCoords = []; // {coord, wasCoordHit}
+    // this.hitCoords = [];
   }
   isSunk() {
     if (this.numOfHits === this.length) {
@@ -13,11 +13,16 @@ export default class Ship {
       return true;
     }
   }
-  hit() {
+  hit(coord = null) {
+    if (coord !== null){
+      this.placedCoords.findIndex((ob)=>{
+        
+      })
+    }
     this.numOfHits += 1;
     this.isSunk();
   }
-  validateGivenCoords(coords) {
+  areShipCoordinatesValid(coords) {
     if (coords.length !== this.length) {
       throw new Error("Number of coordinates === length.");
     }
@@ -50,11 +55,11 @@ export default class Ship {
 
   placeAtCoords(coords) {
     // This function assumes that the given coordinates are within the 10x10 grid.
-    this.validateGivenCoords(coords);
+    this.areShipCoordinatesValid(coords);
     this.placedCoords = [];
 
     coords.forEach((e) => {
-      this.placedCoords.push(e);
+      this.placedCoords.push({coord:e, wasCoordHit: false});
     });
   }
 }

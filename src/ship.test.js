@@ -29,11 +29,12 @@ describe("ship", () => {
       [0, 1],
       [0, 2],
     ]);
-    expect(ship.placedCoords).toEqual([
-      [0, 0],
-      [0, 1],
-      [0, 2],
-    ]);
+    expect(ship.placedCoords[0].coord).toEqual(
+      [0, 0]
+    );
+    expect(ship.placedCoords[0].wasCoordHit).toEqual(
+      false
+    );
   });
 
   test("can't be placed at wrong coords", () => {
