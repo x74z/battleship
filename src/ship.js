@@ -14,10 +14,14 @@ export default class Ship {
     }
   }
   hit(coord = null) {
-    if (coord !== null){
-      this.placedCoords.findIndex((ob)=>{
-        
-      })
+    if (coord !== null) {
+      const index = this.placedCoords.findIndex((coordObj) => {
+        if (coordObj.coord[0] === coord[0] && coordObj.coord[1] === coord[1])
+          return true;
+        else return false;
+      });
+      if (typeof index === "number")
+        this.placedCoords[index].wasCoordHit = true;
     }
     this.numOfHits += 1;
     this.isSunk();
@@ -59,7 +63,7 @@ export default class Ship {
     this.placedCoords = [];
 
     coords.forEach((e) => {
-      this.placedCoords.push({coord:e, wasCoordHit: false});
+      this.placedCoords.push({ coord: e, wasCoordHit: false });
     });
   }
 }

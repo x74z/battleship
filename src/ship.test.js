@@ -71,6 +71,17 @@ describe("ship", () => {
     ).toThrow("Ship is not in a straight line");
   });
 
+  test("hit works with coordinates", () => {
+
+    const ship2 = new Ship(2)
+    ship2.placeAtCoords([[0,0],[0,1]]);
+    ship2.hit([0,0])
+    expect(ship2.placedCoords[0].wasCoordHit).toBe(true)
+    expect(ship2.placedCoords[0].coord).toEqual([0,0])
+    expect(ship2.placedCoords[1].wasCoordHit).toBe(false)
+
+
+  })
 
 
 });
