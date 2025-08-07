@@ -37,37 +37,39 @@ describe("ship", () => {
   });
 
   test("can't be placed at wrong coords", () => {
-    expect(() => {
+    expect(() =>
       ship.placeAtCoords([
         [12391239321, 12837912321],
         [1221, 9],
         [24, 21921],
-      ]);
-    }).toThrow(Error);
-    expect(() => {
+      ]),
+    ).toThrow(Error);
+    expect(() =>
       ship.placeAtCoords([
         [0, 0],
         [0, 0],
         [0, 2],
-      ]);
-    }).toThrow(Error);
+      ]),
+    ).toThrow(Error);
   });
 
   test("can't be placed in anything other than a straight line", () => {
-    expect(() => {
+    expect(() =>
       ship.placeAtCoords([
         [0, 0],
         [0, 1],
         [1, 1],
-      ]);
-    }).toThrow("Ship is not in a straight line");
-    expect(() => {
+      ]),
+    ).toThrow("Ship is not in a straight line");
+    expect(() =>
       ship.placeAtCoords([
         [1, 1],
         [1, 2],
         [2, 2],
-      ]);
-    }).toThrow("Ship is not in a straight line");
+      ]),
+    ).toThrow("Ship is not in a straight line");
   });
+
+
 
 });

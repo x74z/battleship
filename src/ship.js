@@ -5,6 +5,7 @@ export default class Ship {
     this.isHit = false;
     this.isSunked = false;
     this.placedCoords = [];
+    this.hitCoords = [];
   }
   isSunk() {
     if (this.numOfHits === this.length) {
@@ -32,7 +33,6 @@ export default class Ship {
     let lastCoord;
     coords.forEach((currentCoord) => {
       if (lastCoord === undefined) {
-        console.log("once");
         lastCoord = currentCoord;
         return;
       }
