@@ -20,10 +20,11 @@ export default class Ship {
           return true;
         else return false;
       });
-      if (typeof index === "number")
+      if (index !== -1)
         this.placedCoords[index].wasCoordHit = true;
     }
     this.numOfHits += 1;
+    this.isHit = true;
     this.isSunk();
   }
   areShipCoordinatesValid(coords) {

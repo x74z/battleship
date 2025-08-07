@@ -1,4 +1,4 @@
-import Ship from "./ship";
+import Ship from "./ship.js";
 
 describe("ship", () => {
   let ship;
@@ -79,6 +79,8 @@ describe("ship", () => {
     expect(ship2.placedCoords[0].wasCoordHit).toBe(true)
     expect(ship2.placedCoords[0].coord).toEqual([0,0])
     expect(ship2.placedCoords[1].wasCoordHit).toBe(false)
+    ship2.hit([0,1])
+    expect(ship2.isSunked).toBe(true)
 
 
   })
