@@ -48,5 +48,16 @@ describe("Gameboard", () => {
   test("haveAllShipsSunked method", () =>{
     // console.log(gb.ships[0].ship)
    expect(gb.haveAllShipsSunked()).toBe(true) 
+  })  
+  
+  test("populateBoardForRegularGame method", () =>{
+    // console.log(gb.ships[0].ship)
+    gb.ships = [];
+    gb.occupiedCoords = [];
+    gb.hitCoordinates = [];
+    gb.missedCoordinates = [];
+    gb.populateBoardForRegularGame()
+    
+   expect(gb.ships.length).toBe(5) 
   })
 });

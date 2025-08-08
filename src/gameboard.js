@@ -16,6 +16,22 @@ export default class Gameboard {
     }
     return false;
   }
+  
+  populateBoardForRegularGame(){
+    const predeterminedCoords = {
+      carrier: [[0,0], [0,1], [0,2], [0,3], [0,4]],
+      battleship: [[2,0], [2,1], [2,2], [2,3]],
+      cruiser: [[4,0], [4,1], [4,2]],
+      destroyer: [[6,0], [6,1]],
+      submarine: [[8,0]],
+    }
+  for (const [shipName, coords] of Object.entries(predeterminedCoords)) {
+      this.placeShip(coords.length,coords);
+      
+    }
+  }
+
+  
 
   placeShip(shipLength, coords) {
     if (!coords.every((e) => this.isCoordinateWithinGrid(e)))
