@@ -36,8 +36,8 @@ body {
   background-color: var(--lighter-black);
   margin: auto;
   border-radius: var(--border-radius-size);
-  width: 95%;
-  height: 95%;
+  width: 99%;
+  height: 99%;
   padding: 10px;
   display:flex;
   align-items: center;
@@ -53,20 +53,28 @@ body {
   width: var(--board-size);
 
   table {
-    /* padding: 9px; */
+    padding: 8px;
     background-color: pink;
     border-radius: var(--border-radius-size);
     height: 100%;
     width: 100%;
-    border-spacing: 2px; /* Two pixels is the default */
-
+    border-spacing: 0px;
 
     td {
       padding: 0px;
       height: 10%;
       width: 10%;
-      border-radius: var(--border-radius-size);
       border: solid black 1px;
     }
   }
+
+}
+.battlefield__table-cell--occupied  {
+  background-color: var(--rusty-red);
+}
+.battlefield__table-cell--hit  {
+  /* background-color: var(--rusty-red); */
+}
+.battlefield__table-cell--miss  {
+  /* background-color: var(--rusty-red); */
 }
