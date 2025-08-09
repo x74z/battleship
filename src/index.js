@@ -12,4 +12,6 @@ import DomHandler from "./dom-handler.js";
   const player1 = new Player();
   player1.gb.populateBoardForRegularGame();
   domHandler.colorCellsInBoard(player1.gb.getPlacedShipsCoordinates(), "player");
+
+  domHandler.addClickListenersToCells(player1.gb, "player")
 })();
