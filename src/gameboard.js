@@ -8,6 +8,14 @@ export default class Gameboard {
     this.hitCoordinates = [];
     this.missedCoordinates = [];
   }
+  getHitCoordinates(){
+    return this.hitCoordinates;
+  }
+
+  getMissedCoordinates(){
+    return this.missedCoordinates;
+  }
+
   isCoordinateWithinGrid(coordinate) {
     if (coordinate[0] >= 0 && coordinate[0] <= 9) {
       if (coordinate[1] >= 0 && coordinate[1] <= 9) {
