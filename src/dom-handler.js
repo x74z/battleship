@@ -3,13 +3,18 @@ export default class DomHandler {
     this.cellMissClass = "battlefield__table-cell--miss";
     this.cellHitClass = "battlefield__table-cell--hit";
     this.cellOccupiedClass = "battlefield__table-cell--occupied";
+    this.gameOverBoardClass = "battlefield__board--over"
   }
   colorCellsInBoard(coords, target = "player") {
     // coords is an array of arrays. [[0,0], [0,1], ...]
     const board = this.getBoardWithTarget(target);
 
     coords.forEach((coord) => {
-      this.updateCellClassOfBoardWithCoord( this.cellOccupiedClass, coord, board);
+      this.updateCellClassOfBoardWithCoord(
+        this.cellOccupiedClass,
+        coord,
+        board,
+      );
     });
   }
   updateCellClassOfBoardWithCoord(newClass, coord, board) {
@@ -40,9 +45,12 @@ export default class DomHandler {
         this.updateCellClassOfBoardWithCoord(this.cellMissClass, coord, board);
       });
     }
-    if (playerBoardObject.haveAllShipsSunked()){
-      // Logic for a gameover something
-    }
+  }
+  handleAllShipsSunked(board) {
+    //TODO: make this do something useful
+
+    board.classList.add(this.gameOverBoardClass)
+    console.log("All ships have sunked");
   }
 
   getBoardWithTarget(target = "player") {
@@ -52,14 +60,23 @@ export default class DomHandler {
     const board = this.getBoardWithTarget(target);
     const cells = board.querySelectorAll(".js-battlefield__table-cell");
     cells.forEach((cell) => {
-      cell.addEventListener("pointerdown", (event) => {
+      const eventHandler = (event) => {
         playerBoardObject.receiveAttack([
           parseInt(cell.dataset.x),
           parseInt(cell.dataset.y),
         ]);
         // After running the attack, the ui must be updated
         this.updateCellsOnHitOrMiss(playerBoardObject, board);
-      });
+
+        if (playerBoardObject.haveAllShipsSunked()) {
+          // TODO: make something here to prevent further clicking?
+          this.handleAllShipsSunked(board);
+        }
+
+        cell.removeEventListener("pointerdown", eventHandler);
+      };
+
+      cell.addEventListener("pointerdown", eventHandler);
     });
   }
 }
