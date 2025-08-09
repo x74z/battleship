@@ -31,6 +31,12 @@ export default class Gameboard {
     }
   }
 
+  clearBoard(){
+    gb.ships = [];
+    gb.occupiedCoords = [];
+    gb.hitCoordinates = [];
+    gb.missedCoordinates = [];
+  }
   
 
   placeShip(shipLength, coords) {
