@@ -3,7 +3,7 @@ export default class Gameboard {
   // This is a 10x10 grid. from 0 to 9.
   constructor(size = 10) {
     this.size = size;
-    this.ships = [];
+    this.ships = []; //{ ship:ship, usedCoords: [[x,y], ...] }
     this.occupiedCoords = [];
     this.hitCoordinates = [];
     this.missedCoordinates = [];
@@ -16,28 +16,57 @@ export default class Gameboard {
     }
     return false;
   }
-  
-  populateBoardForRegularGame(){
+  getPlacedShipsCoordinates() {
+    // This function is going to be used mostly for the dom functions
+
+    // didn't know about flatmap. It joins the arrays. It is map + flat(1)
+    // let finalCoords = [];
+
+    // this.ships.forEach((ship) => {
+    //   ship.usedCoords.forEach((coords) => {
+    //     finalCoords.push(coords);
+    //   });
+    // });
+    return this.ships.flatMap(ship => ship.usedCoords);
+  }
+
+  populateBoardForRegularGame() {
     const predeterminedCoords = {
-      carrier: [[0,0], [0,1], [0,2], [0,3], [0,4]],
-      battleship: [[2,0], [2,1], [2,2], [2,3]],
-      cruiser: [[4,0], [4,1], [4,2]],
-      destroyer: [[6,0], [6,1]],
-      submarine: [[8,0]],
-    }
-  for (const [shipName, coords] of Object.entries(predeterminedCoords)) {
-      this.placeShip(coords.length,coords);
-      
+      carrier: [
+        [0, 0],
+        [0, 1],
+        [0, 2],
+        [0, 3],
+        [0, 4],
+      ],
+      battleship: [
+        [2, 0],
+        [2, 1],
+        [2, 2],
+        [2, 3],
+      ],
+      cruiser: [
+        [4, 0],
+        [4, 1],
+        [4, 2],
+      ],
+      destroyer: [
+        [6, 0],
+        [6, 1],
+      ],
+      submarine: [[8, 0]],
+    };
+    for (const [shipName, coords] of Object.entries(predeterminedCoords)) {
+      this.placeShip(coords.length, coords);
     }
   }
 
-  clearBoard(){
-    gb.ships = [];
-    gb.occupiedCoords = [];
-    gb.hitCoordinates = [];
-    gb.missedCoordinates = [];
+  clearBoard() {
+    this.ships = [];
+    this.occupiedCoords = [];
+    this.hitCoordinates = [];
+    this.missedCoordinates = [];
   }
-  
 
   placeShip(shipLength, coords) {
     if (!coords.every((e) => this.isCoordinateWithinGrid(e)))
