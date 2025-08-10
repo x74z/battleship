@@ -108,7 +108,7 @@ export default class DomHandler {
       cell.removeEventListener("pointerdown", this.cellClickEventHandler);
     }
   }
-  addClickListenersToCells(playerBoardObject, target = "player") {
+  addClickListenersToCells(playerBoardObject, target = "enemy") {
     const board = this.getBoardWithTarget(target);
     const cells = board.querySelectorAll(".js-battlefield__table-cell");
     cells.forEach((cell) => {
