@@ -25,10 +25,11 @@ function initBoard(
 (() => {
   // Test if i can add the classes to the cells for each ship
   const domHandler = new DomHandler();
-  const SHOW_SHIPS = true;
-  const HIDE_SHIPS = false;
-  const MAKE_CELLS_INTERACTABLE = true;
-  domHandler.startPlayerVSComputerGame();
+  // const SHOW_SHIPS = true;
+  // const HIDE_SHIPS = false;
+  // const MAKE_CELLS_INTERACTABLE = true;
+  domHandler.startSelectionScreen();
+  // domHandler.startPlayerVSComputerGame();
   // domHandler.startPlayerVSPlayerGame();
   // initBoard(domHandler, "player", SHOW_SHIPS, MAKE_CELLS_INTERACTABLE);
   // initBoard(domHandler, "enemy", HIDE_SHIPS, MAKE_CELLS_INTERACTABLE);

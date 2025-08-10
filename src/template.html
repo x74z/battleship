@@ -138,8 +138,8 @@
       </table>
     </div>
 
-    <!-- Enemy Board -->
 
+      <!-- Enemy Board -->
     <div
       class="battlefield__board battlefield__board--enemy js-battlefield__board--enemy battlefield__board--current-turn">
       <img class="battlefield__board-game-over-screen" src="./media/lose-7820642_1280.png" alt="Game Over" />
@@ -268,6 +268,21 @@
       </table>
     </div>
   </div>
+    <dialog class="dialog dialog--game-selection-screen js-dialog--game-selection-screen">
+      <div class="dialog__content">
+        <p class="dialog__title">Select a gamemode</p>
+        <form method="dialog" class="dialog__form js-gamemode-dialog">
+          <p class="dialog__title">Note: Ships are placed randomly, <br>button to choose them randomly is coming soon</p>
+          
+        <select name="gamemode" required>
+          <option  selected="selected" value="pVcpu">Player VS CPU</option>
+          <option  value="pVp">Player VS Player</option>
+        </select>
+        <button type="submit" class="dialog__form-submit-button js-submit-button">Play</button>
+
+        </form>
+      </div>
+    </dialog>
 </body>
 
 </html>

@@ -177,9 +177,24 @@ export default class DomHandler {
         return;
       } else if (hitSuccesful) {
         // By calling itself, it gets another turn, if it hits a ship.
-        this.handleCPUTurn(board, cpuBoardObj, realPlayerBoardObject); 
+        this.handleCPUTurn(board, cpuBoardObj, realPlayerBoardObject);
       }
     }
+  }
+  startSelectionScreen() {
+    const dialog = document.querySelector(".js-dialog--game-selection-screen");
+    dialog.show();
+    const dialogForm = dialog.querySelector("form");
+    dialogForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const chosenGamemode = dialogForm.gamemode.value;
+      if (chosenGamemode === "pVp") {
+        this.startPlayerVSPlayerGame();
+      } else {
+        this.startPlayerVSComputerGame();
+      }
+      dialog.close();
+    });
   }
   startPlayerVSComputerGame() {
     const player = new Player();

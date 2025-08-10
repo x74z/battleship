@@ -75,7 +75,7 @@ body {
   --cornflower-blue: #4c91ff;
   --snow: snow;
   --white-greyish: #dedede;
-  --border-radius-size: 10px;
+  --border-radius-size: 15px;
   width: 100%;
   height: 100vh;
   background-color: var(--rusty-red);
@@ -97,6 +97,7 @@ body {
     "Open Sans",
     "Helvetica Neue",
     sans-serif;
+  align-items: center;
 }
 
 .battlefield {
@@ -181,5 +182,36 @@ body {
 
   .battlefield__board-title {
     color: grey;
+  }
+}
+
+.dialog {
+  font-size: 3rem;
+  position: absolute;
+  margin: auto;
+  border-radius: var(--border-radius-size);
+  background-color: var(--lighter-black);
+  border: solid var(--snow) 1px;
+  color: white;
+
+  .dialog__content {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .dialog__form {
+    border-radius: var(--border-radius-size);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    p{
+      font-size: 1.3rem;
+    }
+
+    select, button {
+      background-color: var(--snow);
+      border-radius: var(--border-radius-size);
+    }
   }
 }
