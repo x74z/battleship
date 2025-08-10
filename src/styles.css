@@ -64,6 +64,9 @@ h6 {
   isolation: isolate;
 }
 
+html{
+  height:100vh;
+}
 body {
   --black: #0f0f0f;
   --lighter-black: #222222;
@@ -105,6 +108,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-around;
+  flex-wrap: wrap;
 }
 
 .battlefield__board {
@@ -121,12 +125,17 @@ body {
     text-align: center;
     color: var(--rusty-red);
   }
+  .battlefield__board-title--current-turn {
+    color: white;
+  }
+  .battlefield__board-title--not-current-turn {
+    opacity: 0.2;
+  }
 
   .battlefield__table {
-    padding: 8px;
+    padding: 7px;
     background-color: #856084;
     border-radius: var(--border-radius-size);
-    /* flex: auto; */
     aspect-ratio: 1/1;
     width: 93%;
     border-spacing: 0px;
@@ -157,6 +166,8 @@ body {
 }
 
 .battlefield__board--over {
-  background-color: blue;
-  /* padding: 10px; */
+  /* background-color: blue; */
+  .battlefield__board-title {
+    color: green;
+  }
 }
