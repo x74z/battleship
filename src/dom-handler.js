@@ -85,32 +85,40 @@ export default class DomHandler {
         break;
     }
   }
+  cellClickEventHandler(event, cell, board, target, playerBoardObject) {
+    const haveAllShipsSunked = playerBoardObject.haveAllShipsSunked();
+    if (this.currentTurn === target && !haveAllShipsSunked) {
+      const hitSuccesful = playerBoardObject.receiveAttack([
+        // receive attack returns true if succesful, so we use it to switch turn later.
+        parseInt(cell.dataset.x),
+        parseInt(cell.dataset.y),
+      ]);
+      // After running the attack, the ui must be updated
+      this.updateCellsOnHitOrMiss(playerBoardObject, board);
+
+      if (haveAllShipsSunked) {
+        // TODO: make something here to prevent further clicking?
+        this.handleAllShipsSunked(board);
+      }
+      // The turn does not switch is a ship is hit.
+      if (!hitSuccesful) this.switchTurn(target);
+
+      cell.removeEventListener("pointerdown", this.cellClickEventHandler);
+    }
+  }
   addClickListenersToCells(playerBoardObject, target = "player") {
     const board = this.getBoardWithTarget(target);
     const cells = board.querySelectorAll(".js-battlefield__table-cell");
     cells.forEach((cell) => {
-      const eventHandler = (event) => {
-        if (this.currentTurn === target) {
-          const hitSuccesful = playerBoardObject.receiveAttack([
-            // receive attack returns true if succesful
-            parseInt(cell.dataset.x),
-            parseInt(cell.dataset.y),
-          ]);
-          // After running the attack, the ui must be updated
-          this.updateCellsOnHitOrMiss(playerBoardObject, board);
-
-          if (playerBoardObject.haveAllShipsSunked()) {
-            // TODO: make something here to prevent further clicking?
-            this.handleAllShipsSunked(board);
-          }
-          // The turn does not switch is a ship is hit.
-          if (!hitSuccesful) this.switchTurn(target);
-
-          cell.removeEventListener("pointerdown", eventHandler);
-        }
-      };
-
-      cell.addEventListener("pointerdown", eventHandler);
+      cell.addEventListener("pointerdown", (event) =>
+        this.cellClickEventHandler(
+          event,
+          cell,
+          board,
+          target,
+          playerBoardObject,
+        ),
+      );
     });
   }
 }
