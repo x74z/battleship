@@ -4,7 +4,12 @@ import Player from "./player.js";
 import "./styles.css";
 import DomHandler from "./dom-handler.js";
 
-function initBoard(domHandler, target = "player", showShipCells = false, makeShipsInteractable = false) {
+function initBoard(
+  domHandler,
+  target = "player",
+  showShipCells = false,
+  makeShipsInteractable = false,
+) {
   // These functions are just for testing, clean this up later
   const playerClass = new Player();
   playerClass.gb.populateBoardForRegularGame();
@@ -23,6 +28,8 @@ function initBoard(domHandler, target = "player", showShipCells = false, makeShi
   const SHOW_SHIPS = true;
   const HIDE_SHIPS = false;
   const MAKE_CELLS_INTERACTABLE = true;
-  initBoard(domHandler, "player", SHOW_SHIPS, MAKE_CELLS_INTERACTABLE);
-  initBoard(domHandler, "enemy", HIDE_SHIPS, MAKE_CELLS_INTERACTABLE);
+  domHandler.startPlayerVSComputerGame();
+  // domHandler.startPlayerVSPlayerGame();
+  // initBoard(domHandler, "player", SHOW_SHIPS, MAKE_CELLS_INTERACTABLE);
+  // initBoard(domHandler, "enemy", HIDE_SHIPS, MAKE_CELLS_INTERACTABLE);
 })();

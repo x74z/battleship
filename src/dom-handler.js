@@ -29,9 +29,9 @@ export default class DomHandler {
     cell.classList.add(newClass);
   }
 
-  updateCellsOnHitOrMiss(playerBoardObject, board) {
-    const hitCoordinates = playerBoardObject.getHitCoordinates();
-    const missedCoordinates = playerBoardObject.getMissedCoordinates();
+  updateCellsOnHitOrMiss(boardObject, board) {
+    const hitCoordinates = boardObject.getHitCoordinates();
+    const missedCoordinates = boardObject.getMissedCoordinates();
     const xHitMark =
       '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><title>alpha-x</title><path d="M9,7L11,12L9,17H11L12,14.5L13,17H15L13,12L15,7H13L12,9.5L11,7H9Z" /></svg>';
 
@@ -61,13 +61,14 @@ export default class DomHandler {
     board.classList.add(this.gameOverBoardClass);
     console.log("All ships have sunked");
   }
-  switchTurn(target) {
-    const playerBoard = this.getBoardWithTarget("player");
+  switchTurnFrom(target) {
+    console.log(target, "changed");
+    const realPlayerBoard = this.getBoardWithTarget("player");
     const enemyBoard = this.getBoardWithTarget("enemy");
     const enemyBoardTitle = enemyBoard.querySelector(
       ".battlefield__board-title",
     );
-    const playerBoardTitle = playerBoard.querySelector(
+    const playerBoardTitle = realPlayerBoard.querySelector(
       ".battlefield__board-title",
     );
     const addAndRemoveClassesToBoards = (current, next) => {
@@ -79,55 +80,122 @@ export default class DomHandler {
     switch (target) {
       case "player":
         this.currentTurn = "enemy";
-        addAndRemoveClassesToBoards(playerBoard, enemyBoard);
+        addAndRemoveClassesToBoards(realPlayerBoard, enemyBoard);
         break;
       case "enemy":
         this.currentTurn = "player";
-        addAndRemoveClassesToBoards(enemyBoard, playerBoard);
+        addAndRemoveClassesToBoards(enemyBoard, realPlayerBoard);
         break;
     }
   }
-  cellClickEventHandler(event, cell, board, target, playerBoardObject) {
+  cellClickEventHandler(
+    event,
+    cell,
+    board,
+    target,
+    boardObject,
+    isEnemyCPU = false,
+    realPlayerBoardObject = undefined,
+  ) {
     // Having this updated here and inside the if statement makes it work. Keep it this way
-    let haveAllShipsSunked = playerBoardObject.haveAllShipsSunked();
-    if (this.currentTurn === target && !haveAllShipsSunked) {
-      const hitSuccesful = playerBoardObject.receiveAttack([
+    let haveAllShipsSunked = boardObject.haveAllShipsSunked();
+    if (
+      this.currentTurn === target &&
+      !haveAllShipsSunked
+      // && !boardObject.isCoordUsed([cell.dataset.x, cell.dataset.y])
+    ) {
+      const hitSuccesful = boardObject.receiveAttack([
         // receive attack returns true if succesful, so we use it to switch turn later.
         parseInt(cell.dataset.x),
         parseInt(cell.dataset.y),
       ]);
       // After running the attack, the ui must be updated
-      this.updateCellsOnHitOrMiss(playerBoardObject, board);
+      this.updateCellsOnHitOrMiss(boardObject, board);
 
-      haveAllShipsSunked = playerBoardObject.haveAllShipsSunked();
+      haveAllShipsSunked = boardObject.haveAllShipsSunked();
       if (haveAllShipsSunked) {
         // TODO: make something here to prevent further clicking?
         this.handleAllShipsSunked(board);
       }
       // The turn does not switch is a ship is hit.
-      if (!hitSuccesful) this.switchTurn(target);
+      if (!hitSuccesful) {
+        this.switchTurnFrom(target);
 
+        if (isEnemyCPU) {
+          // Handle the cpu move if needed
+          const realPlayerBoard = this.getBoardWithTarget("player");
+          // const realPlayerCells = realPlayerBoard.querySelectorAll( ".js-battlefield__table-cell");
+          const cpuBoard = boardObject; // If in cpu mode, the player board will actually be the cpu
+          this.handleCPUTurn(realPlayerBoard, cpuBoard, realPlayerBoardObject);
+        }
+      }
       cell.removeEventListener("pointerdown", this.cellClickEventHandler);
     }
   }
-  addClickListenersToCells(playerBoardObject, target = "enemy") {
+  addClickListenersToCells(
+    boardObject,
+    target = "enemy",
+    isEnemyCPU = false,
+    realPlayerBoardObject = undefined, // This is for the cpu to use.
+  ) {
     const board = this.getBoardWithTarget(target);
     const cells = board.querySelectorAll(".js-battlefield__table-cell");
     cells.forEach((cell) => {
-      cell.addEventListener("pointerdown", (event) =>
-        this.cellClickEventHandler(
-          event,
-          cell,
-          board,
-          target,
-          playerBoardObject,
-        ),
+      cell.addEventListener(
+        "pointerdown",
+        (event) => {
+          this.cellClickEventHandler(
+            event,
+            cell,
+            board,
+            target,
+            boardObject,
+            isEnemyCPU,
+            realPlayerBoardObject,
+          );
+        },
+        { once: true },
       );
     });
   }
+  handleCPUTurn(board, cpuBoardObj, realPlayerBoardObject) {
+    let haveAllShipsSunked = realPlayerBoardObject.haveAllShipsSunked();
+    if (!haveAllShipsSunked) {
+      const hitSuccesful = realPlayerBoardObject.receiveRandomHit();
+      // After running the attack, the ui must be updated
+      this.updateCellsOnHitOrMiss(realPlayerBoardObject, board);
+
+      haveAllShipsSunked = realPlayerBoardObject.haveAllShipsSunked();
+      if (haveAllShipsSunked) {
+        // TODO: make something here to prevent further clicking?
+        this.handleAllShipsSunked(board);
+      }
+      // The turn does not switch is a ship is hit.
+      console.log(hitSuccesful);
+      if (!hitSuccesful) {
+        this.switchTurnFrom("player");
+        return;
+      } else if (hitSuccesful) {
+        // By calling itself, it gets another turn, if it hits a ship.
+        this.handleCPUTurn(board, cpuBoardObj, realPlayerBoardObject); 
+      }
+    }
+  }
   startPlayerVSComputerGame() {
     const player = new Player();
+    const enemyCPU = new Player();
     player.gb.populateBoardWithRandomShips();
-    this.colorShipCellsInBoard(player.gb.getPlacedShipsCoordinates(), "player")
+    enemyCPU.gb.populateBoardWithRandomShips();
+    this.colorShipCellsInBoard(player.gb.getPlacedShipsCoordinates(), "player");
+    const ENEMY_CPU = true;
+    this.addClickListenersToCells(enemyCPU.gb, "enemy", ENEMY_CPU, player.gb);
+  }
+  startPlayerVSPlayerGame() {
+    const player = new Player();
+    const enemy = new Player();
+    player.gb.populateBoardWithRandomShips();
+    enemy.gb.populateBoardWithRandomShips();
+    this.addClickListenersToCells(player.gb, "player");
+    this.addClickListenersToCells(enemy.gb, "enemy");
   }
 }
