@@ -1,8 +1,8 @@
 import Ship from "./ship.js";
 export default class Gameboard {
   // This is a 10x10 grid. from 0 to 9.
-  constructor(size = 10) {
-    this.size = size;
+  constructor(boardSize = 10) {
+    this.boardSize = boardSize;
     this.ships = []; //{ ship:ship, usedCoords: [[x,y], ...] }
     this.occupiedCoords = [];
     this.hitCoordinates = [];
@@ -18,8 +18,8 @@ export default class Gameboard {
   }
 
   isCoordinateWithinGrid(coordinate) {
-    if (coordinate[0] >= 0 && coordinate[0] <= 9) {
-      if (coordinate[1] >= 0 && coordinate[1] <= 9) {
+    if (coordinate[0] >= 0 && coordinate[0] <= this.boardSize - 1) {
+      if (coordinate[1] >= 0 && coordinate[1] <= this.boardSize - 1) {
         return true;
       }
     }
@@ -30,13 +30,28 @@ export default class Gameboard {
 
     // didn't know about flatmap. It joins the arrays. It is map + flat(1)
     // let finalCoords = [];
-
     // this.ships.forEach((ship) => {
     //   ship.usedCoords.forEach((coords) => {
     //     finalCoords.push(coords);
     //   });
     // });
     return this.ships.flatMap((ship) => ship.usedCoords);
+  }
+  receiveHitAtRandomCoord() {
+    const getRandomCoord = () => {
+      const coord = [
+        Math.floor(Math.random() * this.boardSize),
+        Math.floor(Math.random() * this.boardSize),
+      ];
+      while (this.interactedCoordinates.indexOf(coord) !== -1) {
+        coord[0] = Math.floor(Math.random() * this.boardSize);
+        coord[1] = Math.floor(Math.random() * this.boardSize);
+      }
+      return coord;
+    };
+    const randomCoord = getRandomCoord();
+    this.receiveAttack(randomCoord);
+    return randomCoord;
   }
 
   populateBoardForRegularGame() {
