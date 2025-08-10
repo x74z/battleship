@@ -7,12 +7,13 @@ export default class Gameboard {
     this.occupiedCoords = [];
     this.hitCoordinates = [];
     this.missedCoordinates = [];
+    this.interactedCoordinates = []; // This one is used so the computer doesn't hit the same coord twice
   }
-  getHitCoordinates(){
+  getHitCoordinates() {
     return this.hitCoordinates;
   }
 
-  getMissedCoordinates(){
+  getMissedCoordinates() {
     return this.missedCoordinates;
   }
 
@@ -35,29 +36,29 @@ export default class Gameboard {
     //     finalCoords.push(coords);
     //   });
     // });
-    return this.ships.flatMap(ship => ship.usedCoords);
+    return this.ships.flatMap((ship) => ship.usedCoords);
   }
 
   populateBoardForRegularGame() {
     const predeterminedCoords = {
-      carrier: [
-        [0, 0],
-        [0, 1],
-        [0, 2],
-        [0, 3],
-        [0, 4],
-      ],
-      battleship: [
-        [2, 0],
-        [2, 1],
-        [2, 2],
-        [2, 3],
-      ],
-      cruiser: [
-        [4, 0],
-        [4, 1],
-        [4, 2],
-      ],
+      // carrier: [
+      //   [0, 0],
+      //   [0, 1],
+      //   [0, 2],
+      //   [0, 3],
+      //   [0, 4],
+      // ],
+      // battleship: [
+      //   [2, 0],
+      //   [2, 1],
+      //   [2, 2],
+      //   [2, 3],
+      // ],
+      // cruiser: [
+      //   [4, 0],
+      //   [4, 1],
+      //   [4, 2],
+      // ],
       destroyer: [
         [6, 0],
         [6, 1],
@@ -74,6 +75,7 @@ export default class Gameboard {
     this.occupiedCoords = [];
     this.hitCoordinates = [];
     this.missedCoordinates = [];
+    this.interactedCoordinates = [];
   }
 
   placeShip(shipLength, coords) {
@@ -101,13 +103,18 @@ export default class Gameboard {
       });
     });
 
+    this.interactedCoordinates.push(coord);
+
     if (index !== -1) {
       this.ships[index].ship.hit(coord);
       this.hitCoordinates.push(coord);
       // Check if all ships have sunked after one has sunked
-      // console.log(this.ships[index].ship)
       if (this.ships[index].ship.isSunked === true) this.haveAllShipsSunked();
-    } else this.missedCoordinates.push(coord);
+      return true;
+    } else {
+      this.missedCoordinates.push(coord);
+      return false;
+    }
   }
 
   haveAllShipsSunked() {

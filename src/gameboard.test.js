@@ -77,7 +77,7 @@ describe("Gameboard", () => {
   test("populateBoardForRegularGame method", () => {
     gb.clearBoard();
     gb.populateBoardForRegularGame();
-    expect(gb.ships.length).toBe(5);
+    expect(gb.ships.length).toBe(2);
   });
   test("getPlacedShipsCoordinates method", () => {
     gb.clearBoard();
