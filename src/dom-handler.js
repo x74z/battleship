@@ -8,7 +8,7 @@ export default class DomHandler {
     this.activeTurnClass = "battlefield__board-title--current-turn";
     this.inactiveTurnClass = "battlefield__board-title--not-current-turn";
   }
-  colorCellsInBoard(coords, target = "player") {
+  colorShipCellsInBoard(coords, target = "player") {
     // coords is an array of arrays. [[0,0], [0,1], ...]
     const board = this.getBoardWithTarget(target);
 
@@ -91,7 +91,8 @@ export default class DomHandler {
     cells.forEach((cell) => {
       const eventHandler = (event) => {
         if (this.currentTurn === target) {
-          playerBoardObject.receiveAttack([
+          const hitSuccesful = playerBoardObject.receiveAttack([
+            // receive attack returns true if succesful
             parseInt(cell.dataset.x),
             parseInt(cell.dataset.y),
           ]);
@@ -102,8 +103,8 @@ export default class DomHandler {
             // TODO: make something here to prevent further clicking?
             this.handleAllShipsSunked(board);
           }
-          // Now something to change the turn.
-          this.switchTurn(target);
+          // The turn does not switch is a ship is hit.
+          if (!hitSuccesful) this.switchTurn(target);
 
           cell.removeEventListener("pointerdown", eventHandler);
         }
