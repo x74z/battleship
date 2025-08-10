@@ -86,7 +86,8 @@ export default class DomHandler {
     }
   }
   cellClickEventHandler(event, cell, board, target, playerBoardObject) {
-    const haveAllShipsSunked = playerBoardObject.haveAllShipsSunked();
+    // Having this updated here and inside the if statement makes it work. Keep it this way
+    let haveAllShipsSunked = playerBoardObject.haveAllShipsSunked();
     if (this.currentTurn === target && !haveAllShipsSunked) {
       const hitSuccesful = playerBoardObject.receiveAttack([
         // receive attack returns true if succesful, so we use it to switch turn later.
@@ -96,6 +97,7 @@ export default class DomHandler {
       // After running the attack, the ui must be updated
       this.updateCellsOnHitOrMiss(playerBoardObject, board);
 
+      haveAllShipsSunked = playerBoardObject.haveAllShipsSunked();
       if (haveAllShipsSunked) {
         // TODO: make something here to prevent further clicking?
         this.handleAllShipsSunked(board);
