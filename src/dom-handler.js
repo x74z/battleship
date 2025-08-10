@@ -3,7 +3,10 @@ export default class DomHandler {
     this.cellMissClass = "battlefield__table-cell--miss";
     this.cellHitClass = "battlefield__table-cell--hit";
     this.cellOccupiedClass = "battlefield__table-cell--occupied";
-    this.gameOverBoardClass = "battlefield__board--over"
+    this.gameOverBoardClass = "battlefield__board--over";
+    this.currentTurn = "player";
+    this.activeTurnClass = "battlefield__board-title--current-turn";
+    this.inactiveTurnClass = "battlefield__board-title--not-current-turn";
   }
   colorCellsInBoard(coords, target = "player") {
     // coords is an array of arrays. [[0,0], [0,1], ...]
@@ -46,34 +49,64 @@ export default class DomHandler {
       });
     }
   }
-  handleAllShipsSunked(board) {
-    //TODO: make this do something useful
-
-    board.classList.add(this.gameOverBoardClass)
-    console.log("All ships have sunked");
-  }
 
   getBoardWithTarget(target = "player") {
     return document.querySelector(`.js-battlefield__board--${target}`);
+  }
+  handleAllShipsSunked(board) {
+    //TODO: make this do something useful
+
+    board.classList.add(this.gameOverBoardClass);
+    console.log("All ships have sunked");
+  }
+  switchTurn(target) {
+    const playerBoard = this.getBoardWithTarget("player");
+    const enemyBoard = this.getBoardWithTarget("enemy");
+    const enemyBoardTitle = enemyBoard.querySelector(
+      ".battlefield__board-title",
+    );
+    const playerBoardTitle = playerBoard.querySelector(
+      ".battlefield__board-title",
+    );
+    switch (target) {
+      case "player":
+        this.currentTurn = "enemy";
+        playerBoardTitle.classList.remove(this.activeTurnClass);
+        playerBoardTitle.classList.add(this.inactiveTurnClass);
+        enemyBoardTitle.classList.remove(this.inactiveTurnClass);
+        enemyBoardTitle.classList.add(this.activeTurnClass);
+        break;
+      case "enemy":
+        this.currentTurn = "player";
+        enemyBoardTitle.classList.remove(this.activeTurnClass);
+        enemyBoardTitle.classList.add(this.inactiveTurnClass);
+        playerBoardTitle.classList.remove(this.inactiveTurnClass);
+        playerBoardTitle.classList.add(this.activeTurnClass);
+        break;
+    }
   }
   addClickListenersToCells(playerBoardObject, target = "player") {
     const board = this.getBoardWithTarget(target);
     const cells = board.querySelectorAll(".js-battlefield__table-cell");
     cells.forEach((cell) => {
       const eventHandler = (event) => {
-        playerBoardObject.receiveAttack([
-          parseInt(cell.dataset.x),
-          parseInt(cell.dataset.y),
-        ]);
-        // After running the attack, the ui must be updated
-        this.updateCellsOnHitOrMiss(playerBoardObject, board);
+        if (this.currentTurn === target) {
+          playerBoardObject.receiveAttack([
+            parseInt(cell.dataset.x),
+            parseInt(cell.dataset.y),
+          ]);
+          // After running the attack, the ui must be updated
+          this.updateCellsOnHitOrMiss(playerBoardObject, board);
 
-        if (playerBoardObject.haveAllShipsSunked()) {
-          // TODO: make something here to prevent further clicking?
-          this.handleAllShipsSunked(board);
+          if (playerBoardObject.haveAllShipsSunked()) {
+            // TODO: make something here to prevent further clicking?
+            this.handleAllShipsSunked(board);
+          }
+          // Now something to change the turn.
+          this.switchTurn(target);
+
+          cell.removeEventListener("pointerdown", eventHandler);
         }
-
-        cell.removeEventListener("pointerdown", eventHandler);
       };
 
       cell.addEventListener("pointerdown", eventHandler);
