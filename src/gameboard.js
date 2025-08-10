@@ -37,23 +37,33 @@ export default class Gameboard {
     // });
     return this.ships.flatMap((ship) => ship.usedCoords);
   }
-  receiveHitAtRandomCoord() {
+  isCoordUsed(coord) {
+    return this.interactedCoordinates.some(
+      (c) => c[0] === coord[0] && c[1] === coord[1],
+    );
+  }
+  receiveRandomHit() {
     const getRandomCoord = () => {
-      const coord = [
+      let coord = [
         Math.floor(Math.random() * this.boardSize),
         Math.floor(Math.random() * this.boardSize),
       ];
-      while (this.interactedCoordinates.indexOf(coord) !== -1) {
+      while (this.isCoordUsed(coord)) {
         coord[0] = Math.floor(Math.random() * this.boardSize);
         coord[1] = Math.floor(Math.random() * this.boardSize);
       }
       return coord;
     };
     const randomCoord = getRandomCoord();
-    this.receiveAttack(randomCoord);
-    return randomCoord;
+
+    // console.log(randomCoord);
+    return this.receiveAttack(randomCoord);
   }
 
+  populateBoardWithRandomShips() {
+    // TODO: make this work
+    this.populateBoardForRegularGame();
+  }
   populateBoardForRegularGame() {
     const predeterminedCoords = {
       // carrier: [
@@ -118,15 +128,15 @@ export default class Gameboard {
       });
     });
 
-    this.interactedCoordinates.push(coord);
-
     if (index !== -1) {
+      this.interactedCoordinates.push(coord);
       this.ships[index].ship.hit(coord);
       this.hitCoordinates.push(coord);
       // Check if all ships have sunked after one has sunked
       if (this.ships[index].ship.isSunked === true) this.haveAllShipsSunked();
       return true;
     } else {
+      this.interactedCoordinates.push(coord);
       this.missedCoordinates.push(coord);
       return false;
     }
