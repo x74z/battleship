@@ -4,7 +4,7 @@ export default class DomHandler {
     this.cellHitClass = "battlefield__table-cell--hit";
     this.cellOccupiedClass = "battlefield__table-cell--occupied";
     this.gameOverBoardClass = "battlefield__board--over";
-    this.currentTurn = "player";
+    this.currentTurn = "enemy"; // Also manages who starts first
     this.activeTurnClass = "battlefield__board-title--current-turn";
     this.inactiveTurnClass = "battlefield__board-title--not-current-turn";
   }
@@ -68,20 +68,20 @@ export default class DomHandler {
     const playerBoardTitle = playerBoard.querySelector(
       ".battlefield__board-title",
     );
+    const addAndRemoveClassesToTitles = (current, next) => {
+      current.classList.remove(this.activeTurnClass);
+      current.classList.add(this.inactiveTurnClass);
+      next.classList.remove(this.inactiveTurnClass);
+      next.classList.add(this.activeTurnClass);
+    };
     switch (target) {
       case "player":
         this.currentTurn = "enemy";
-        playerBoardTitle.classList.remove(this.activeTurnClass);
-        playerBoardTitle.classList.add(this.inactiveTurnClass);
-        enemyBoardTitle.classList.remove(this.inactiveTurnClass);
-        enemyBoardTitle.classList.add(this.activeTurnClass);
+        addAndRemoveClassesToTitles(playerBoardTitle, enemyBoardTitle);
         break;
       case "enemy":
         this.currentTurn = "player";
-        enemyBoardTitle.classList.remove(this.activeTurnClass);
-        enemyBoardTitle.classList.add(this.inactiveTurnClass);
-        playerBoardTitle.classList.remove(this.inactiveTurnClass);
-        playerBoardTitle.classList.add(this.activeTurnClass);
+        addAndRemoveClassesToTitles(enemyBoardTitle, playerBoardTitle);
         break;
     }
   }
