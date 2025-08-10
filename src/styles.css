@@ -64,9 +64,10 @@ h6 {
   isolation: isolate;
 }
 
-html{
-  height:100vh;
+html {
+  height: 100vh;
 }
+
 body {
   --black: #0f0f0f;
   --lighter-black: #222222;
@@ -121,13 +122,19 @@ body {
   align-items: center;
   flex-direction: column;
 
+  .battlefield__board-game-over-screen {
+    display: none;
+  }
+
   .battlefield__board-title {
     text-align: center;
     color: var(--rusty-red);
   }
+
   .battlefield__board-title--current-turn {
     color: white;
   }
+
   .battlefield__board-title--not-current-turn {
     opacity: 0.2;
   }
@@ -166,8 +173,10 @@ body {
 }
 
 .battlefield__board--over {
-  /* background-color: blue; */
+  .battlefield__board-game-over-screen {
+    display:block;
+  }
   .battlefield__board-title {
-    color: green;
+    color: grey;
   }
 }
