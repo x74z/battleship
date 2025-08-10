@@ -131,14 +131,6 @@ body {
     color: var(--rusty-red);
   }
 
-  .battlefield__board-title--current-turn {
-    color: white;
-  }
-
-  .battlefield__board-title--not-current-turn {
-    opacity: 0.2;
-  }
-
   .battlefield__table {
     padding: 7px;
     background-color: #856084;
@@ -172,10 +164,21 @@ body {
   }
 }
 
+.battlefield__board--current-turn {
+  .battlefield__board-title {
+    color: white;
+  }
+}
+
+.battlefield__board--not-current-turn {
+  opacity: 0.2;
+}
+
 .battlefield__board--over {
   .battlefield__board-game-over-screen {
-    display:block;
+    display: block;
   }
+
   .battlefield__board-title {
     color: grey;
   }

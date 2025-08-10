@@ -1,3 +1,5 @@
+import Player from "./player.js";
+
 export default class DomHandler {
   constructor() {
     this.cellMissClass = "battlefield__table-cell--miss";
@@ -5,8 +7,8 @@ export default class DomHandler {
     this.cellOccupiedClass = "battlefield__table-cell--occupied";
     this.gameOverBoardClass = "battlefield__board--over";
     this.currentTurn = "enemy"; // Also manages who starts first
-    this.activeTurnClass = "battlefield__board-title--current-turn";
-    this.inactiveTurnClass = "battlefield__board-title--not-current-turn";
+    this.activeTurnClass = "battlefield__board--current-turn";
+    this.inactiveTurnClass = "battlefield__board--not-current-turn";
   }
   colorShipCellsInBoard(coords, target = "player") {
     // coords is an array of arrays. [[0,0], [0,1], ...]
@@ -68,7 +70,7 @@ export default class DomHandler {
     const playerBoardTitle = playerBoard.querySelector(
       ".battlefield__board-title",
     );
-    const addAndRemoveClassesToTitles = (current, next) => {
+    const addAndRemoveClassesToBoards = (current, next) => {
       current.classList.remove(this.activeTurnClass);
       current.classList.add(this.inactiveTurnClass);
       next.classList.remove(this.inactiveTurnClass);
@@ -77,11 +79,11 @@ export default class DomHandler {
     switch (target) {
       case "player":
         this.currentTurn = "enemy";
-        addAndRemoveClassesToTitles(playerBoardTitle, enemyBoardTitle);
+        addAndRemoveClassesToBoards(playerBoard, enemyBoard);
         break;
       case "enemy":
         this.currentTurn = "player";
-        addAndRemoveClassesToTitles(enemyBoardTitle, playerBoardTitle);
+        addAndRemoveClassesToBoards(enemyBoard, playerBoard);
         break;
     }
   }
@@ -122,5 +124,10 @@ export default class DomHandler {
         ),
       );
     });
+  }
+  startPlayerVSComputerGame() {
+    const player = new Player();
+    player.gb.populateBoardWithRandomShips();
+    this.colorShipCellsInBoard(player.gb.getPlacedShipsCoordinates(), "player")
   }
 }
