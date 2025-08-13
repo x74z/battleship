@@ -147,6 +147,9 @@ body {
       aspect-ratio: 1/1;
       border: solid black 1px;
     }
+    .battlefield__table-cell:hover {
+      opacity: 0.4;
+    }
 
     .battlefield__table-cell--occupied {
       background-color: var(--rusty-red);
