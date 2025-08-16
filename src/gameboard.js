@@ -62,6 +62,8 @@ export default class Gameboard {
 
   populateBoardWithRandomShips() {
     // TODO: make this work
+    // First of all, a game has one 5, one 4, two 3 and one 2 sizes.
+
     this.populateBoardForRegularGame();
   }
   populateBoardForRegularGame() {
