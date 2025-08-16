@@ -147,6 +147,7 @@ body {
       aspect-ratio: 1/1;
       border: solid black 1px;
     }
+
     .battlefield__table-cell:hover {
       opacity: 0.4;
     }
@@ -208,18 +209,20 @@ body {
     display: flex;
     flex-direction: column;
     gap: 10px;
-    p{
+
+    p {
       font-size: 1.3rem;
     }
 
-    select, button {
+    select,
+    button {
       background-color: var(--snow);
       border-radius: var(--border-radius-size);
     }
   }
 }
 
-.battlefield__table--reference-board{
+.battlefield__table--reference-board {
   /* aspect-ratio: 1/1; */
   width: 50vh;
 }

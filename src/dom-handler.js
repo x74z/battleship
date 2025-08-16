@@ -3,17 +3,22 @@ import Player from "./player.js";
 // I should really make the code easier to read, especially the start mode. Maybe move it somewhere?... Idkk
 export default class DomHandler {
   constructor() {
-    this.cellMissClass = "battlefield__table-cell--miss";
-    this.cellHitClass = "battlefield__table-cell--hit";
-    this.cellOccupiedClass = "battlefield__table-cell--occupied";
-    this.gameOverBoardClass = "battlefield__board--over";
+    this.cellClasses = {
+      miss: "battlefield__table-cell--miss",
+      hit: "battlefield__table-cell--hit",
+      occupied: "battlefield__table-cell--occupied",
+    };
+    this.boardClasses = {
+      gameOver: "battlefield__board--over",
+      activeTurn: "battlefield__board--current-turn",
+      inactiveTurn: "battlefield__board--not-current-turn",
+    };
+
     this.currentTurn = "enemy"; // Also manages who starts first
-    this.activeTurnClass = "battlefield__board--current-turn";
-    this.inactiveTurnClass = "battlefield__board--not-current-turn";
     this.chosenGamemode = "";
   }
 
-  colorShipCellsInBoard(coords, target = "player", optionalBoard = undefined) {
+  colorOccupiedCells(coords, target = "player", optionalBoard = undefined) {
     // coords is an array of arrays. [[0,0], [0,1], ...]
     let board = this.getBoardWithTarget(target);
     // This is used to color the ships in the place ships dialog
@@ -21,7 +26,7 @@ export default class DomHandler {
 
     coords.forEach((coord) => {
       this.updateCellClassOfBoardWithCoord(
-        this.cellOccupiedClass,
+        this.cellClasses.occupied,
         coord,
         board,
       );
@@ -45,14 +50,22 @@ export default class DomHandler {
         const cell = board.querySelector(
           `.js-battlefield__table-cell[data-x="${coord[0]}"][data-y="${coord[1]}"]`,
         );
-        this.updateCellClassOfBoardWithCoord(this.cellHitClass, coord, board);
+        this.updateCellClassOfBoardWithCoord(
+          this.cellClasses.hit,
+          coord,
+          board,
+        );
         cell.innerHTML = xHitMark;
       });
     }
 
     if (missedCoordinates.length > 0) {
       missedCoordinates.forEach((coord) => {
-        this.updateCellClassOfBoardWithCoord(this.cellMissClass, coord, board);
+        this.updateCellClassOfBoardWithCoord(
+          this.cellClasses.miss,
+          coord,
+          board,
+        );
       });
     }
   }
@@ -64,7 +77,7 @@ export default class DomHandler {
   handleAllShipsSunked(board) {
     //TODO: make this do something useful
 
-    board.classList.add(this.gameOverBoardClass);
+    board.classList.add(this.boardClasses.gameOver);
     console.log("All ships have sunked");
   }
 
@@ -78,20 +91,24 @@ export default class DomHandler {
     const playerBoardTitle = realPlayerBoard.querySelector(
       ".battlefield__board-title",
     );
-    const addAndRemoveClassesToBoards = (current, next) => {
-      current.classList.remove(this.activeTurnClass);
-      current.classList.add(this.inactiveTurnClass);
-      next.classList.remove(this.inactiveTurnClass);
-      next.classList.add(this.activeTurnClass);
+    const changeBoardClasses = (current, next) => {
+      current.classList.replace(
+        this.boardClasses.activeTurn,
+        this.boardClasses.inactiveTurn,
+      );
+      next.classList.replace(
+        this.boardClasses.inactiveTurn,
+        this.boardClasses.activeTurn,
+      );
     };
     switch (target) {
       case "player":
         this.currentTurn = "enemy";
-        addAndRemoveClassesToBoards(realPlayerBoard, enemyBoard);
+        changeBoardClasses(realPlayerBoard, enemyBoard);
         break;
       case "enemy":
         this.currentTurn = "player";
-        addAndRemoveClassesToBoards(enemyBoard, realPlayerBoard);
+        changeBoardClasses(enemyBoard, realPlayerBoard);
         break;
     }
   }
@@ -106,17 +123,13 @@ export default class DomHandler {
   ) {
     // Having this updated here and inside the if statement makes it work. Keep it this way
     let haveAllShipsSunked = boardObject.haveAllShipsSunked();
-    if (
-      this.currentTurn === target &&
-      !haveAllShipsSunked
-      // && !boardObject.isCoordUsed([cell.dataset.x, cell.dataset.y])
-    ) {
+
+    if (this.currentTurn === target && !haveAllShipsSunked) {
       const hitSuccesful = boardObject.receiveAttack([
-        // receive attack returns true if succesful, so we use it to switch turn later.
         parseInt(cell.dataset.x),
         parseInt(cell.dataset.y),
       ]);
-      // After running the attack, the ui must be updated
+
       this.updateCellsOnHitOrMiss(boardObject, board);
 
       haveAllShipsSunked = boardObject.haveAllShipsSunked();
@@ -124,16 +137,17 @@ export default class DomHandler {
         // TODO: make something here to prevent further clicking?
         this.handleAllShipsSunked(board);
       }
-      // The turn does not switch is a ship is hit.
+
       if (!hitSuccesful) {
         this.switchTurnFrom(target);
 
         if (isEnemyCPU) {
-          // Handle the cpu move if needed
-          const realPlayerBoard = this.getBoardWithTarget("player");
-          // const realPlayerCells = realPlayerBoard.querySelectorAll( ".js-battlefield__table-cell");
           const cpuBoard = boardObject; // If in cpu mode, the player board will actually be the cpu
-          this.handleCPUTurn(realPlayerBoard, cpuBoard, realPlayerBoardObject);
+          this.handleCPUTurn(
+            this.getBoardWithTarget("player"),
+            cpuBoard,
+            realPlayerBoardObject,
+          );
         }
       }
       cell.removeEventListener("pointerdown", this.cellClickEventHandler);
@@ -147,67 +161,62 @@ export default class DomHandler {
     realPlayerBoardObject = undefined, // This is for the cpu to use.
   ) {
     const board = this.getBoardWithTarget(target);
+
     const cells = board.querySelectorAll(".js-battlefield__table-cell");
     cells.forEach((cell) => {
-      cell.addEventListener(
-        "pointerdown",
-        (event) => {
-          this.cellClickEventHandler(
-            event,
-            cell,
-            board,
-            target,
-            boardObject,
-            isEnemyCPU,
-            realPlayerBoardObject,
-          );
-        },
-        { once: true },
-      );
+      const clickHandler = (e) => {
+        this.cellClickEventHandler(
+          e,
+          cell,
+          board,
+          target,
+          boardObject,
+          isEnemyCPU,
+          realPlayerBoardObject,
+        );
+      };
+      cell.addEventListener("pointerdown", clickHandler, { once: true });
     });
   }
   handleCPUTurn(board, cpuBoardObj, realPlayerBoardObject) {
     let haveAllShipsSunked = realPlayerBoardObject.haveAllShipsSunked();
-    if (!haveAllShipsSunked) {
-      const hitSuccesful = realPlayerBoardObject.receiveRandomHit();
-      // After running the attack, the ui must be updated
-      this.updateCellsOnHitOrMiss(realPlayerBoardObject, board);
+    if (haveAllShipsSunked) return;
 
-      haveAllShipsSunked = realPlayerBoardObject.haveAllShipsSunked();
-      if (haveAllShipsSunked) {
-        // TODO: make something here to prevent further clicking?
-        this.handleAllShipsSunked(board);
-      }
-      // The turn does not switch is a ship is hit.
-      console.log(hitSuccesful);
-      if (!hitSuccesful) {
-        this.switchTurnFrom("player");
-        return;
-      } else if (hitSuccesful) {
-        // By calling itself, it gets another turn, if it hits a ship.
-        this.handleCPUTurn(board, cpuBoardObj, realPlayerBoardObject);
-      }
+    const hitSuccesful = realPlayerBoardObject.receiveRandomHit();
+
+    this.updateCellsOnHitOrMiss(realPlayerBoardObject, board);
+
+    haveAllShipsSunked = realPlayerBoardObject.haveAllShipsSunked();
+    if (haveAllShipsSunked) this.handleAllShipsSunked(board);
+
+    console.log(hitSuccesful);
+    if (!hitSuccesful) {
+      this.switchTurnFrom("player");
+      return;
+    } else if (hitSuccesful) {
+      // By calling itself, it gets another turn, if it hits a ship.
+      this.handleCPUTurn(board, cpuBoardObj, realPlayerBoardObject);
     }
   }
 
   startSelectionScreen() {
     const dialog = document.querySelector(".js-dialog--game-selection-screen");
     dialog.show();
+
     const dialogForm = dialog.querySelector("form");
     dialogForm.addEventListener("submit", (e) => {
       e.preventDefault();
-      const chosenGamemode = dialogForm.gamemode.value;
-      if (chosenGamemode === "pVp") {
-        this.startPlayerVSPlayerGame();
-      } else {
-        this.startPlayerVSComputerGame();
-      }
-      this.chosenGamemode = chosenGamemode;
+      this.chosenGamemode = dialogForm.gamemode.value;
+
+      this.chosenGamemode === "pVp"
+        ? this.startPlayerVSPlayerGame()
+        : this.startPlayerVSComputerGame();
       dialog.close();
     });
   }
 
-  singlePlayerShipPlacementSelectionScreen(playerBoard) {
+  shipPlacementSelectionScreen(playerBoard) {
+
     const dialog = document.querySelector(
       ".js-dialog--single-player-ship-placement-dialog",
     );
@@ -218,23 +227,29 @@ export default class DomHandler {
     const tableBoard = document.querySelector(".js-table-reference-div");
     const form = document.querySelector(".js-single-ship-dialog");
     form.append(tableBoard);
+
+
+    playerBoard.populateBoardWithRandomShips();
+    this.colorOccupiedCells( playerBoard.getPlacedShipsCoordinates(), "player", tableBoard);
     dialog.show();
 
     const randomizeBoard = () => {
       playerBoard.populateBoardWithRandomShips();
-      this.colorShipCellsInBoard(
+      this.colorOccupiedCells(
         playerBoard.getPlacedShipsCoordinates(),
         "player",
         tableBoard,
       );
     };
+
     const randomizeButton = document.querySelector(".js-randomize-button");
     randomizeButton.addEventListener("pointerdown", randomizeBoard);
+
     sendButton.addEventListener("pointerdown", () => {
       randomizeButton.removeEventListener("pointerdown", randomizeBoard);
       // Reset all cell classes to be able to reuse the same board
       const cells = tableBoard.querySelectorAll("td");
-      cells.forEach((cell) => cell.classList.remove(this.cellOccupiedClass));
+      cells.forEach((cell) => cell.classList.remove(this.cellClasses.occupied));
       return playerBoard;
     });
   }
@@ -244,10 +259,9 @@ export default class DomHandler {
     const enemyCPU = new Player();
     enemyCPU.gb.populateBoardWithRandomShips();
 
-    this.singlePlayerShipPlacementSelectionScreen(player.gb);
+    this.shipPlacementSelectionScreen(player.gb);
 
-    // The ships placement will be colored here
-    this.colorShipCellsInBoard(player.gb.getPlacedShipsCoordinates(), "player");
+    this.colorOccupiedCells(player.gb.getPlacedShipsCoordinates(), "player");
 
     const ENEMY_CPU = true;
     this.addClickListenersToCells(enemyCPU.gb, "enemy", ENEMY_CPU, player.gb);
@@ -256,8 +270,10 @@ export default class DomHandler {
   startPlayerVSPlayerGame() {
     const player = new Player();
     const enemy = new Player();
+
     player.gb.populateBoardWithRandomShips();
     enemy.gb.populateBoardWithRandomShips();
+
     this.addClickListenersToCells(player.gb, "player");
     this.addClickListenersToCells(enemy.gb, "enemy");
   }
