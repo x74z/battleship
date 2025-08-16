@@ -33,8 +33,8 @@ export default class GameHandler {
   }
 
   switchTurnFrom(target) {
-    console.log(target, "changed");
-    const realPlayerBoard = this.getBoardWithTarget("player");
+    console.log(target, "<<- changed to the opposite");
+    const player1 = this.getBoardWithTarget("player");
     const enemyBoard = this.getBoardWithTarget("enemy");
 
     const changeBoardClasses = (current, next) => {
@@ -49,14 +49,15 @@ export default class GameHandler {
     };
 
     if (target === "enemy") {
-      this.currentTurn = "enemy";
-      changeBoardClasses(realPlayerBoard, enemyBoard);
-    } else {
       this.currentTurn = "player";
-      changeBoardClasses(enemyBoard, realPlayerBoard);
+      changeBoardClasses(enemyBoard, player1);
+    } else {
+      this.currentTurn = "enemy";
+      changeBoardClasses(player1, enemyBoard);
     }
-    console.log(this.currentTurn)
+    // console.log(this.currentTurn);
   }
+
   cellClickEventHandler(
     e,
     cell,
@@ -70,7 +71,7 @@ export default class GameHandler {
     let haveAllShipsSunked = boardObject.haveAllShipsSunked();
 
     if (haveAllShipsSunked) return;
-    if (!this.currentTurn === target) return;
+    if (this.currentTurn !== target) return;
 
     const hitSuccesful = boardObject.receiveAttack([
       parseInt(cell.dataset.x),
