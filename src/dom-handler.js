@@ -49,4 +49,27 @@ export default class DomHandler {
       );
     });
   }
+
+  changeBoardClasses(current, next)  {
+  current.classList.replace(
+    this.boardClasses.activeTurn,
+    this.boardClasses.inactiveTurn,
+  );
+  next.classList.replace(
+    this.boardClasses.inactiveTurn,
+    this.boardClasses.activeTurn,
+  );
+}
+  gameOverBoardClass(board){
+    board.classList.add(this.boardClasses.gameOver);
+  }
+  removeBoardCellClasses(board){
+
+      const cells = board.querySelectorAll("td");
+      cells.forEach((cell)=>{
+ cell.classList.remove(this.cellClasses.occupied)
+ cell.classList.remove(this.cellClasses.hit)
+ cell.classList.remove(this.cellClasses.miss)
+    });
+  }
 }

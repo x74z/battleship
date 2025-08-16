@@ -4,17 +4,6 @@ import Player from "./player.js";
 // I should really make the code easier to read, especially the start mode. Maybe move it somewhere?... Idkk
 export default class GameHandler {
   constructor() {
-    this.cellClasses = {
-      miss: "battlefield__table-cell--miss",
-      hit: "battlefield__table-cell--hit",
-      occupied: "battlefield__table-cell--occupied",
-    };
-    this.boardClasses = {
-      gameOver: "battlefield__board--over",
-      activeTurn: "battlefield__board--current-turn",
-      inactiveTurn: "battlefield__board--not-current-turn",
-    };
-
     this.domHandler = new DomHandler();
 
     this.currentTurn = "enemy"; // Also manages who starts first
@@ -28,7 +17,7 @@ export default class GameHandler {
   handleAllShipsSunked(board) {
     //TODO: make this do something useful
 
-    board.classList.add(this.boardClasses.gameOver);
+    this.domHandler.gameOverBoardClass(board)
     console.log("All ships have sunked");
   }
 
@@ -50,10 +39,10 @@ export default class GameHandler {
 
     if (target === "enemy") {
       this.currentTurn = "player";
-      changeBoardClasses(enemyBoard, player1);
+      this.domHandler.changeBoardClasses(enemyBoard, player1);
     } else {
       this.currentTurn = "enemy";
-      changeBoardClasses(player1, enemyBoard);
+      this.domHandler.changeBoardClasses(player1, enemyBoard);
     }
     // console.log(this.currentTurn);
   }
@@ -71,6 +60,7 @@ export default class GameHandler {
     let haveAllShipsSunked = boardObject.haveAllShipsSunked();
 
     if (haveAllShipsSunked) return;
+  console.log(this.currentTurn, target)
     if (this.currentTurn !== target) return;
 
     const hitSuccesful = boardObject.receiveAttack([
@@ -170,16 +160,16 @@ export default class GameHandler {
       ".js-submit-button-single-player-ship",
     );
 
-    const tableBoardDiv = document.querySelector(".js-table-reference-div");
+    const board = document.querySelector(".js-table-reference-div");
     const form = document.querySelector(".js-single-ship-dialog");
-    form.append(tableBoardDiv);
+    form.append(board);
 
     const randomizeBoard = () => {
       playerBoard.populateBoardWithRandomShips();
       this.domHandler.colorOccupiedCells(
         playerBoard.getPlacedShipsCoordinates(),
         "player",
-        tableBoardDiv,
+        board,
       );
     };
     randomizeBoard();
@@ -191,8 +181,8 @@ export default class GameHandler {
     sendButton.addEventListener("pointerdown", () => {
       randomizeButton.removeEventListener("pointerdown", randomizeBoard);
       // Reset all cell classes to be able to reuse the same board
-      const cells = tableBoardDiv.querySelectorAll("td");
-      cells.forEach((cell) => cell.classList.remove(this.cellClasses.occupied));
+      const cells = board.querySelectorAll("td");
+      cells.forEach((cell) => this.domHandler.removeBoardCellClasses(board));
       return playerBoard;
     });
   }

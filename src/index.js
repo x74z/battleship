@@ -5,14 +5,7 @@ import "./styles.css";
 import GameHandler from "./game-handler.js";
 
 (() => {
-  // Test if i can add the classes to the cells for each ship
-  const domHandler = new GameHandler;
-  // const SHOW_SHIPS = true;
-  // const HIDE_SHIPS = false;
-  // const MAKE_CELLS_INTERACTABLE = true;
-  domHandler.startSelectionScreen();
-  // domHandler.startPlayerVSComputerGame();
-  // domHandler.startPlayerVSPlayerGame();
-  // initBoard(domHandler, "player", SHOW_SHIPS, MAKE_CELLS_INTERACTABLE);
-  // initBoard(domHandler, "enemy", HIDE_SHIPS, MAKE_CELLS_INTERACTABLE);
+  // KNOWN ISSUES: sometimes if you interact too fast with a cell and then another one, it seems that the event listener gets removed. This happens more with ship coordinates.
+  const gameHandler = new GameHandler;
+  gameHandler.startSelectionScreen();
 })();
