@@ -56,36 +56,71 @@ export default class Gameboard {
     };
     const randomCoord = getRandomCoord();
 
-    // console.log(randomCoord);
     return this.receiveAttack(randomCoord);
   }
 
   populateBoardWithRandomShips() {
-    // TODO: make this work
-    // First of all, a game has one 5, one 4, two 3 and one 2 sizes.
+    const optionsSizes = {
+      ship1Size: 5,
+      ship2Size: 4,
+      ship3Size: 3,
+      ship4Size: 3,
+      ship5Size: 2,
+      ship6Size: 1,
+    };
+    // for (const shipSize of Object.values(optionsSizes)) {
+    //   // Logic to place the ship
+    //   let coords = [];
+    //   const horizontal = Math.random() < 0.5;
+    //   let chosenNumber = Math.floor(Math.random() * this.boardSize);
+    //   for (let i = 0; i < shipSize; i++) {
+    //     if (horizontal) {
+    //       coords.push([chosenNumber, i]);
+    //       continue;
+    //     }
+    //     coords.push([i, chosenNumber]);
+    //   }
+    //   this.placeShip(shipSize, coords)
+    // }
+    console.log(this.occupiedCoords);
+    this.clearBoard();
+    console.log(this.occupiedCoords);
+    for (const shipSize of Object.values(optionsSizes)) {
+      let placed = false;
 
-    this.populateBoardForRegularGame();
+      while (!placed) {
+        const horizontal = Math.random() < 0.5;
+
+        const startRow = horizontal
+          ? Math.floor(Math.random() * this.boardSize)
+          : Math.floor(Math.random() * (this.boardSize - shipSize + 1));
+
+        const startCol = horizontal
+          ? Math.floor(Math.random() * (this.boardSize - shipSize + 1))
+          : Math.floor(Math.random() * this.boardSize);
+
+        const coords = [];
+        for (let i = 0; i < shipSize; i++) {
+          const row = horizontal ? startRow : startRow + i;
+          const col = horizontal ? startCol + i : startCol;
+          coords.push([row, col]);
+        }
+
+        // Check overlap using occupiedCoords
+        const overlap = coords.some(([row, col]) =>
+          this.occupiedCoords.some(([r, c]) => r === row && c === col),
+        );
+
+        if (!overlap) {
+          this.placeShip(shipSize, coords);
+          placed = true;
+        }
+      }
+    }
   }
   populateBoardForRegularGame() {
     const predeterminedCoords = {
-      // carrier: [
-      //   [0, 0],
-      //   [0, 1],
-      //   [0, 2],
-      //   [0, 3],
-      //   [0, 4],
-      // ],
-      // battleship: [
-      //   [2, 0],
-      //   [2, 1],
-      //   [2, 2],
-      //   [2, 3],
-      // ],
-      // cruiser: [
-      //   [4, 0],
-      //   [4, 1],
-      //   [4, 2],
-      // ],
+      // carrier: [ [0, 0], [0, 1], [0, 2], [0, 3], [0, 4], ], battleship: [ [2, 0], [2, 1], [2, 2], [2, 3], ], cruiser: [ [4, 0], [4, 1], [4, 2], ],
       destroyer: [
         [6, 0],
         [6, 1],
