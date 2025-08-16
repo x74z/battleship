@@ -1,5 +1,6 @@
 import Player from "./player.js";
 
+// I should really make the code easier to read, especially the start mode. Maybe move it somewhere?... Idkk
 export default class DomHandler {
   constructor() {
     this.cellMissClass = "battlefield__table-cell--miss";
@@ -9,10 +10,14 @@ export default class DomHandler {
     this.currentTurn = "enemy"; // Also manages who starts first
     this.activeTurnClass = "battlefield__board--current-turn";
     this.inactiveTurnClass = "battlefield__board--not-current-turn";
+    this.chosenGamemode = "";
   }
-  colorShipCellsInBoard(coords, target = "player") {
+
+  colorShipCellsInBoard(coords, target = "player", optionalBoard = undefined) {
     // coords is an array of arrays. [[0,0], [0,1], ...]
-    const board = this.getBoardWithTarget(target);
+    let board = this.getBoardWithTarget(target);
+    // This is used to color the ships in the place ships dialog
+    if (optionalBoard !== undefined) board = optionalBoard;
 
     coords.forEach((coord) => {
       this.updateCellClassOfBoardWithCoord(
@@ -55,12 +60,14 @@ export default class DomHandler {
   getBoardWithTarget(target = "player") {
     return document.querySelector(`.js-battlefield__board--${target}`);
   }
+
   handleAllShipsSunked(board) {
     //TODO: make this do something useful
 
     board.classList.add(this.gameOverBoardClass);
     console.log("All ships have sunked");
   }
+
   switchTurnFrom(target) {
     console.log(target, "changed");
     const realPlayerBoard = this.getBoardWithTarget("player");
@@ -132,6 +139,7 @@ export default class DomHandler {
       cell.removeEventListener("pointerdown", this.cellClickEventHandler);
     }
   }
+
   addClickListenersToCells(
     boardObject,
     target = "enemy",
@@ -181,6 +189,7 @@ export default class DomHandler {
       }
     }
   }
+
   startSelectionScreen() {
     const dialog = document.querySelector(".js-dialog--game-selection-screen");
     dialog.show();
@@ -193,18 +202,57 @@ export default class DomHandler {
       } else {
         this.startPlayerVSComputerGame();
       }
+      this.chosenGamemode = chosenGamemode;
       dialog.close();
     });
   }
+
+  singlePlayerShipPlacementSelectionScreen(playerBoard) {
+    const dialog = document.querySelector(
+      ".js-dialog--single-player-ship-placement-dialog",
+    );
+    const sendButton = document.querySelector(
+      ".js-submit-button-single-player-ship",
+    );
+
+    const tableBoard = document.querySelector(".js-table-reference-div");
+    const form = document.querySelector(".js-single-ship-dialog");
+    form.append(tableBoard);
+    dialog.show();
+
+    const randomizeBoard = () => {
+      playerBoard.populateBoardWithRandomShips();
+      this.colorShipCellsInBoard(
+        playerBoard.getPlacedShipsCoordinates(),
+        "player",
+        tableBoard,
+      );
+    };
+    const randomizeButton = document.querySelector(".js-randomize-button");
+    randomizeButton.addEventListener("pointerdown", randomizeBoard);
+    sendButton.addEventListener("pointerdown", () => {
+      randomizeButton.removeEventListener("pointerdown", randomizeBoard);
+      // Reset all cell classes to be able to reuse the same board
+      const cells = tableBoard.querySelectorAll("td");
+      cells.forEach((cell) => cell.classList.remove(this.cellOccupiedClass));
+      return playerBoard;
+    });
+  }
+
   startPlayerVSComputerGame() {
     const player = new Player();
     const enemyCPU = new Player();
-    player.gb.populateBoardWithRandomShips();
     enemyCPU.gb.populateBoardWithRandomShips();
+
+    this.singlePlayerShipPlacementSelectionScreen(player.gb);
+
+    // The ships placement will be colored here
     this.colorShipCellsInBoard(player.gb.getPlacedShipsCoordinates(), "player");
+
     const ENEMY_CPU = true;
     this.addClickListenersToCells(enemyCPU.gb, "enemy", ENEMY_CPU, player.gb);
   }
+
   startPlayerVSPlayerGame() {
     const player = new Player();
     const enemy = new Player();

@@ -14,7 +14,7 @@
       class="battlefield__board battlefield__board--player js-battlefield__board--player battlefield__board--not-current-turn">
       <img class="battlefield__board-game-over-screen" src="./media/lose-7820642_1280.png" alt="Game Over" />
       <h1 class="battlefield__board-title">You.</h1>
-      <table class="battlefield__table js-battlefield__table">
+      <table class="battlefield__table js-battlefield__table--player">
         <tr class="battlefield__table-row js-battlefield__table-row" data-row="9">
           <td class="battlefield__table-cell js-battlefield__table-cell" data-x="0" data-y="9"></td>
           <td class="battlefield__table-cell js-battlefield__table-cell" data-x="1" data-y="9"></td>
@@ -283,6 +283,142 @@
         </form>
       </div>
     </dialog>
+    <dialog class="dialog dialog--single-player-ship-placement-dialog js-dialog--single-player-ship-placement-dialog">
+      <div class="dialog__content">
+        <p class="dialog__title">Place the ships</p>
+        <form method="dialog" class="dialog__form js-single-ship-dialog">
+          
+          <button type="button" class="js-randomize-button">Randomize</button>
+        <button type="submit" class="dialog__form-submit-button js-submit-button-single-player-ship">Play</button>
+
+        </form>
+      </div>
+    </dialog>
+    <div class="js-table-reference-div battlefield__board" style="display: none;">
+      
+      <table class="battlefield__table battlefield__table--reference-board js-battlefield__table--reference" style="">
+        <tr class="battlefield__table-row js-battlefield__table-row" data-row="9">
+          <td class="battlefield__table-cell js-battlefield__table-cell" data-x="0" data-y="9"></td>
+          <td class="battlefield__table-cell js-battlefield__table-cell" data-x="1" data-y="9"></td>
+          <td class="battlefield__table-cell js-battlefield__table-cell" data-x="2" data-y="9"></td>
+          <td class="battlefield__table-cell js-battlefield__table-cell" data-x="3" data-y="9"></td>
+          <td class="battlefield__table-cell js-battlefield__table-cell" data-x="4" data-y="9"></td>
+          <td class="battlefield__table-cell js-battlefield__table-cell" data-x="5" data-y="9"></td>
+          <td class="battlefield__table-cell js-battlefield__table-cell" data-x="6" data-y="9"></td>
+          <td class="battlefield__table-cell js-battlefield__table-cell" data-x="7" data-y="9"></td>
+          <td class="battlefield__table-cell js-battlefield__table-cell" data-x="8" data-y="9"></td>
+          <td class="battlefield__table-cell js-battlefield__table-cell" data-x="9" data-y="9"></td>
+        </tr>
+        <tr class="battlefield__table-row js-battlefield__table-row" data-row="8">
+          <td class="battlefield__table-cell js-battlefield__table-cell" data-x="0" data-y="8"></td>
+          <td class="battlefield__table-cell js-battlefield__table-cell" data-x="1" data-y="8"></td>
+          <td class="battlefield__table-cell js-battlefield__table-cell" data-x="2" data-y="8"></td>
+          <td class="battlefield__table-cell js-battlefield__table-cell" data-x="3" data-y="8"></td>
+          <td class="battlefield__table-cell js-battlefield__table-cell" data-x="4" data-y="8"></td>
+          <td class="battlefield__table-cell js-battlefield__table-cell" data-x="5" data-y="8"></td>
+          <td class="battlefield__table-cell js-battlefield__table-cell" data-x="6" data-y="8"></td>
+          <td class="battlefield__table-cell js-battlefield__table-cell" data-x="7" data-y="8"></td>
+          <td class="battlefield__table-cell js-battlefield__table-cell" data-x="8" data-y="8"></td>
+          <td class="battlefield__table-cell js-battlefield__table-cell" data-x="9" data-y="8"></td>
+        </tr>
+        <tr class="battlefield__table-row js-battlefield__table-row" data-row="7">
+          <td class="battlefield__table-cell js-battlefield__table-cell" data-x="0" data-y="7"></td>
+          <td class="battlefield__table-cell js-battlefield__table-cell" data-x="1" data-y="7"></td>
+          <td class="battlefield__table-cell js-battlefield__table-cell" data-x="2" data-y="7"></td>
+          <td class="battlefield__table-cell js-battlefield__table-cell" data-x="3" data-y="7"></td>
+          <td class="battlefield__table-cell js-battlefield__table-cell" data-x="4" data-y="7"></td>
+          <td class="battlefield__table-cell js-battlefield__table-cell" data-x="5" data-y="7"></td>
+          <td class="battlefield__table-cell js-battlefield__table-cell" data-x="6" data-y="7"></td>
+          <td class="battlefield__table-cell js-battlefield__table-cell" data-x="7" data-y="7"></td>
+          <td class="battlefield__table-cell js-battlefield__table-cell" data-x="8" data-y="7"></td>
+          <td class="battlefield__table-cell js-battlefield__table-cell" data-x="9" data-y="7"></td>
+        </tr>
+        <tr class="battlefield__table-row js-battlefield__table-row" data-row="6">
+          <td class="battlefield__table-cell js-battlefield__table-cell" data-x="0" data-y="6"></td>
+          <td class="battlefield__table-cell js-battlefield__table-cell" data-x="1" data-y="6"></td>
+          <td class="battlefield__table-cell js-battlefield__table-cell" data-x="2" data-y="6"></td>
+          <td class="battlefield__table-cell js-battlefield__table-cell" data-x="3" data-y="6"></td>
+          <td class="battlefield__table-cell js-battlefield__table-cell" data-x="4" data-y="6"></td>
+          <td class="battlefield__table-cell js-battlefield__table-cell" data-x="5" data-y="6"></td>
+          <td class="battlefield__table-cell js-battlefield__table-cell" data-x="6" data-y="6"></td>
+          <td class="battlefield__table-cell js-battlefield__table-cell" data-x="7" data-y="6"></td>
+          <td class="battlefield__table-cell js-battlefield__table-cell" data-x="8" data-y="6"></td>
+          <td class="battlefield__table-cell js-battlefield__table-cell" data-x="9" data-y="6"></td>
+        </tr>
+        <tr class="battlefield__table-row js-battlefield__table-row" data-row="5">
+          <td class="battlefield__table-cell js-battlefield__table-cell" data-x="0" data-y="5"></td>
+          <td class="battlefield__table-cell js-battlefield__table-cell" data-x="1" data-y="5"></td>
+          <td class="battlefield__table-cell js-battlefield__table-cell" data-x="2" data-y="5"></td>
+          <td class="battlefield__table-cell js-battlefield__table-cell" data-x="3" data-y="5"></td>
+          <td class="battlefield__table-cell js-battlefield__table-cell" data-x="4" data-y="5"></td>
+          <td class="battlefield__table-cell js-battlefield__table-cell" data-x="5" data-y="5"></td>
+          <td class="battlefield__table-cell js-battlefield__table-cell" data-x="6" data-y="5"></td>
+          <td class="battlefield__table-cell js-battlefield__table-cell" data-x="7" data-y="5"></td>
+          <td class="battlefield__table-cell js-battlefield__table-cell" data-x="8" data-y="5"></td>
+          <td class="battlefield__table-cell js-battlefield__table-cell" data-x="9" data-y="5"></td>
+        </tr>
+        <tr class="battlefield__table-row js-battlefield__table-row" data-row="4">
+          <td class="battlefield__table-cell js-battlefield__table-cell" data-x="0" data-y="4"></td>
+          <td class="battlefield__table-cell js-battlefield__table-cell" data-x="1" data-y="4"></td>
+          <td class="battlefield__table-cell js-battlefield__table-cell" data-x="2" data-y="4"></td>
+          <td class="battlefield__table-cell js-battlefield__table-cell" data-x="3" data-y="4"></td>
+          <td class="battlefield__table-cell js-battlefield__table-cell" data-x="4" data-y="4"></td>
+          <td class="battlefield__table-cell js-battlefield__table-cell" data-x="5" data-y="4"></td>
+          <td class="battlefield__table-cell js-battlefield__table-cell" data-x="6" data-y="4"></td>
+          <td class="battlefield__table-cell js-battlefield__table-cell" data-x="7" data-y="4"></td>
+          <td class="battlefield__table-cell js-battlefield__table-cell" data-x="8" data-y="4"></td>
+          <td class="battlefield__table-cell js-battlefield__table-cell" data-x="9" data-y="4"></td>
+        </tr>
+        <tr class="battlefield__table-row js-battlefield__table-row" data-row="3">
+          <td class="battlefield__table-cell js-battlefield__table-cell" data-x="0" data-y="3"></td>
+          <td class="battlefield__table-cell js-battlefield__table-cell" data-x="1" data-y="3"></td>
+          <td class="battlefield__table-cell js-battlefield__table-cell" data-x="2" data-y="3"></td>
+          <td class="battlefield__table-cell js-battlefield__table-cell" data-x="3" data-y="3"></td>
+          <td class="battlefield__table-cell js-battlefield__table-cell" data-x="4" data-y="3"></td>
+          <td class="battlefield__table-cell js-battlefield__table-cell" data-x="5" data-y="3"></td>
+          <td class="battlefield__table-cell js-battlefield__table-cell" data-x="6" data-y="3"></td>
+          <td class="battlefield__table-cell js-battlefield__table-cell" data-x="7" data-y="3"></td>
+          <td class="battlefield__table-cell js-battlefield__table-cell" data-x="8" data-y="3"></td>
+          <td class="battlefield__table-cell js-battlefield__table-cell" data-x="9" data-y="3"></td>
+        </tr>
+        <tr class="battlefield__table-row js-battlefield__table-row" data-row="2">
+          <td class="battlefield__table-cell js-battlefield__table-cell" data-x="0" data-y="2"></td>
+          <td class="battlefield__table-cell js-battlefield__table-cell" data-x="1" data-y="2"></td>
+          <td class="battlefield__table-cell js-battlefield__table-cell" data-x="2" data-y="2"></td>
+          <td class="battlefield__table-cell js-battlefield__table-cell" data-x="3" data-y="2"></td>
+          <td class="battlefield__table-cell js-battlefield__table-cell" data-x="4" data-y="2"></td>
+          <td class="battlefield__table-cell js-battlefield__table-cell" data-x="5" data-y="2"></td>
+          <td class="battlefield__table-cell js-battlefield__table-cell" data-x="6" data-y="2"></td>
+          <td class="battlefield__table-cell js-battlefield__table-cell" data-x="7" data-y="2"></td>
+          <td class="battlefield__table-cell js-battlefield__table-cell" data-x="8" data-y="2"></td>
+          <td class="battlefield__table-cell js-battlefield__table-cell" data-x="9" data-y="2"></td>
+        </tr>
+        <tr class="battlefield__table-row js-battlefield__table-row" data-row="1">
+          <td class="battlefield__table-cell js-battlefield__table-cell" data-x="0" data-y="1"></td>
+          <td class="battlefield__table-cell js-battlefield__table-cell" data-x="1" data-y="1"></td>
+          <td class="battlefield__table-cell js-battlefield__table-cell" data-x="2" data-y="1"></td>
+          <td class="battlefield__table-cell js-battlefield__table-cell" data-x="3" data-y="1"></td>
+          <td class="battlefield__table-cell js-battlefield__table-cell" data-x="4" data-y="1"></td>
+          <td class="battlefield__table-cell js-battlefield__table-cell" data-x="5" data-y="1"></td>
+          <td class="battlefield__table-cell js-battlefield__table-cell" data-x="6" data-y="1"></td>
+          <td class="battlefield__table-cell js-battlefield__table-cell" data-x="7" data-y="1"></td>
+          <td class="battlefield__table-cell js-battlefield__table-cell" data-x="8" data-y="1"></td>
+          <td class="battlefield__table-cell js-battlefield__table-cell" data-x="9" data-y="1"></td>
+        </tr>
+        <tr class="battlefield__table-row js-battlefield__table-row" data-row="0">
+          <td class="battlefield__table-cell js-battlefield__table-cell" data-x="0" data-y="0"></td>
+          <td class="battlefield__table-cell js-battlefield__table-cell" data-x="1" data-y="0"></td>
+          <td class="battlefield__table-cell js-battlefield__table-cell" data-x="2" data-y="0"></td>
+          <td class="battlefield__table-cell js-battlefield__table-cell" data-x="3" data-y="0"></td>
+          <td class="battlefield__table-cell js-battlefield__table-cell" data-x="4" data-y="0"></td>
+          <td class="battlefield__table-cell js-battlefield__table-cell" data-x="5" data-y="0"></td>
+          <td class="battlefield__table-cell js-battlefield__table-cell" data-x="6" data-y="0"></td>
+          <td class="battlefield__table-cell js-battlefield__table-cell" data-x="7" data-y="0"></td>
+          <td class="battlefield__table-cell js-battlefield__table-cell" data-x="8" data-y="0"></td>
+          <td class="battlefield__table-cell js-battlefield__table-cell" data-x="9" data-y="0"></td>
+        </tr>
+      </table>
+    </div>
 </body>
 
 </html>

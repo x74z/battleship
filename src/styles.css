@@ -218,3 +218,8 @@ body {
     }
   }
 }
+
+.battlefield__table--reference-board{
+  /* aspect-ratio: 1/1; */
+  width: 50vh;
+}
