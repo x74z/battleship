@@ -158,48 +158,58 @@ export default class GameHandler {
   ) {
     const dialog = twoPlayerMode
       ? document.querySelector(
-        ".js-dialog--single-player-ship-placement-dialog",
-      )
+          ".js-dialog--second-player-ship-placement-dialog",
+        )
       : document.querySelector(
-        ".js-dialog--second-player-ship-placement-dialog",
-      );
+          ".js-dialog--single-player-ship-placement-dialog",
+        );
 
     const sendButton = twoPlayerMode
-      ? document.querySelector(".js-submit-button-single-player-ship")
-      : document.querySelector(".js-submit-button-second-player-ship");
+      ? document.querySelector(".js-submit-button-second-player-ship")
+      : document.querySelector(".js-submit-button-single-player-ship");
 
     const originalBoard = document.querySelector(".js-table-reference-div");
     const board = originalBoard.cloneNode(true);
     const form = twoPlayerMode
-      ? document.querySelector(".js-single-ship-dialog")
-      : document.querySelector(".js-second-ship-dialog");
+      ? document.querySelector(".js-second-ship-dialog")
+      : document.querySelector(".js-single-ship-dialog");
     form.append(board);
 
     const randomizeBoard = () => {
+      this.domHandler.removeBoardCellClasses(board);
       playerBoard.populateBoardWithRandomShips();
       this.domHandler.colorOccupiedCells(
         playerBoard.getPlacedShipsCoordinates(),
-        "player",
+        twoPlayerMode ? "enemy" : "player",
         board,
       );
     };
     randomizeBoard();
     dialog.show();
 
-    const randomizeButton = document.querySelector(".js-randomize-button");
+    const randomizeButton = twoPlayerMode
+      ? document.querySelector(".js-randomize-button-second")
+      : document.querySelector(".js-randomize-button-single");
     randomizeButton.addEventListener("pointerdown", randomizeBoard);
 
     sendButton.addEventListener("pointerdown", () => {
       randomizeButton.removeEventListener("pointerdown", randomizeBoard);
       // Reset all cell classes to be able to reuse the same board
-      const cells = board.querySelectorAll("td");
-      cells.forEach((cell) => this.domHandler.removeBoardCellClasses(board));
+      this.domHandler.removeBoardCellClasses(board);
 
       dialog.close();
       // If it's two players, show another dialog.
       if (twoPlayerMode) {
         this.shipPlacementSelectionScreen(enemyBoard, { twoPlayerMode: false });
       }
+      // Prevent cells to get collored if pvp
+      if (this.chosenGamemode === "pVp") return;
+
+      this.domHandler.colorOccupiedCells(
+        playerBoard.getPlacedShipsCoordinates(),
+        "player",
+        this.getBoardWithTarget("player"),
+      );
       return playerBoard;
     });
   }
@@ -209,13 +219,7 @@ export default class GameHandler {
     const enemyCPU = new Player();
     enemyCPU.gb.populateBoardWithRandomShips();
 
-    this.shipPlacementSelectionScreen(player.gb);
-
-    this.domHandler.colorOccupiedCells(
-      player.gb.getPlacedShipsCoordinates(),
-      "player",
-      this.getBoardWithTarget("player"),
-    );
+    this.shipPlacementSelectionScreen(player.gb, { twoPlayerMode: false });
 
     const ENEMY_CPU = true;
     this.addClickListenersToCells(enemyCPU.gb, "enemy", ENEMY_CPU, player.gb);
@@ -225,8 +229,8 @@ export default class GameHandler {
     const player = new Player();
     const enemy = new Player();
 
-    player.gb.populateBoardWithRandomShips();
-    enemy.gb.populateBoardWithRandomShips();
+    // player.gb.populateBoardWithRandomShips();
+    // enemy.gb.populateBoardWithRandomShips();
 
     const TWO_PLAYER_MODE = true;
     this.shipPlacementSelectionScreen(player.gb, {
@@ -236,5 +240,16 @@ export default class GameHandler {
 
     this.addClickListenersToCells(player.gb, "player");
     this.addClickListenersToCells(enemy.gb, "enemy");
+
+    // this.domHandler.colorOccupiedCells(
+    //   player.gb.getPlacedShipsCoordinates(),
+    //   "player",
+    //   this.getBoardWithTarget("player"),
+    // );
+    // this.domHandler.colorOccupiedCells(
+    //   player.gb.getPlacedShipsCoordinates(),
+    //   "enemy",
+    //   this.getBoardWithTarget("enemy"),
+    // );
   }
 }

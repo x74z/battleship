@@ -275,8 +275,8 @@
           <p class="dialog__title">Note: Ships are placed randomly, <br>button to choose them randomly is coming soon</p>
           
         <select name="gamemode" required>
-          <option   value="pVcpu">Player VS CPU</option>
-          <option selected="selected" value="pVp">Player VS Player</option>
+          <option selected="selected"  value="pVcpu">Player VS CPU</option>
+          <option  value="pVp">Player VS Player</option>
         </select>
         <button type="submit" class="dialog__form-submit-button js-submit-button">Play</button>
 
@@ -288,7 +288,7 @@
         <p class="dialog__title">Place the ships, Player 1</p>
         <form method="dialog" class="dialog__form js-single-ship-dialog">
           
-          <button type="button" class="js-randomize-button">Randomize</button>
+          <button type="button" class="js-randomize-button-single">Randomize</button>
         <button type="submit" class="dialog__form-submit-button js-submit-button-single-player-ship">Play</button>
 
         </form>
@@ -299,7 +299,7 @@
         <p class="dialog__title">Place the ships, Player 2</p>
         <form method="dialog" class="dialog__form js-second-ship-dialog">
           
-          <button type="button" class="js-randomize-button">Randomize</button>
+          <button type="button" class="js-randomize-button-second">Randomize</button>
         <button type="submit" class="dialog__form-submit-button js-submit-button-second-player-ship">Play</button>
 
         </form>
