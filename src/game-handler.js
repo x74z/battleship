@@ -17,7 +17,7 @@ export default class GameHandler {
   handleAllShipsSunked(board) {
     //TODO: make this do something useful
 
-    this.domHandler.gameOverBoardClass(board)
+    this.domHandler.gameOverBoardClass(board);
     console.log("All ships have sunked");
   }
 
@@ -60,7 +60,7 @@ export default class GameHandler {
     let haveAllShipsSunked = boardObject.haveAllShipsSunked();
 
     if (haveAllShipsSunked) return;
-  console.log(this.currentTurn, target)
+    console.log(this.currentTurn, target);
     if (this.currentTurn !== target) return;
 
     const hitSuccesful = boardObject.receiveAttack([
@@ -152,16 +152,27 @@ export default class GameHandler {
     });
   }
 
-  shipPlacementSelectionScreen(playerBoard) {
-    const dialog = document.querySelector(
-      ".js-dialog--single-player-ship-placement-dialog",
-    );
-    const sendButton = document.querySelector(
-      ".js-submit-button-single-player-ship",
-    );
+  shipPlacementSelectionScreen(
+    playerBoard,
+    { twoPlayerMode = false, enemyBoard = undefined } = {},
+  ) {
+    const dialog = twoPlayerMode
+      ? document.querySelector(
+        ".js-dialog--single-player-ship-placement-dialog",
+      )
+      : document.querySelector(
+        ".js-dialog--second-player-ship-placement-dialog",
+      );
 
-    const board = document.querySelector(".js-table-reference-div");
-    const form = document.querySelector(".js-single-ship-dialog");
+    const sendButton = twoPlayerMode
+      ? document.querySelector(".js-submit-button-single-player-ship")
+      : document.querySelector(".js-submit-button-second-player-ship");
+
+    const originalBoard = document.querySelector(".js-table-reference-div");
+    const board = originalBoard.cloneNode(true);
+    const form = twoPlayerMode
+      ? document.querySelector(".js-single-ship-dialog")
+      : document.querySelector(".js-second-ship-dialog");
     form.append(board);
 
     const randomizeBoard = () => {
@@ -183,6 +194,12 @@ export default class GameHandler {
       // Reset all cell classes to be able to reuse the same board
       const cells = board.querySelectorAll("td");
       cells.forEach((cell) => this.domHandler.removeBoardCellClasses(board));
+
+      dialog.close();
+      // If it's two players, show another dialog.
+      if (twoPlayerMode) {
+        this.shipPlacementSelectionScreen(enemyBoard, { twoPlayerMode: false });
+      }
       return playerBoard;
     });
   }
@@ -210,6 +227,12 @@ export default class GameHandler {
 
     player.gb.populateBoardWithRandomShips();
     enemy.gb.populateBoardWithRandomShips();
+
+    const TWO_PLAYER_MODE = true;
+    this.shipPlacementSelectionScreen(player.gb, {
+      twoPlayerMode: TWO_PLAYER_MODE,
+      enemyBoard: enemy.gb,
+    });
 
     this.addClickListenersToCells(player.gb, "player");
     this.addClickListenersToCells(enemy.gb, "enemy");
