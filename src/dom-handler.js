@@ -21,6 +21,7 @@ export default class DomHandler {
   colorOccupiedCells(coords, target = "player", optionalBoard = undefined) {
     // coords is an array of arrays. [[0,0], [0,1], ...]
     let board = this.getBoardWithTarget(target);
+
     // This is used to color the ships in the place ships dialog
     if (optionalBoard !== undefined) board = optionalBoard;
 
@@ -39,7 +40,7 @@ export default class DomHandler {
     cell.classList.add(newClass);
   }
 
-  updateCellsOnHitOrMiss(boardObject, board) {
+  updateCellsClassesOnHitOrMiss(boardObject, board) {
     const hitCoordinates = boardObject.getHitCoordinates();
     const missedCoordinates = boardObject.getMissedCoordinates();
     const xHitMark =
@@ -124,34 +125,33 @@ export default class DomHandler {
     // Having this updated here and inside the if statement makes it work. Keep it this way
     let haveAllShipsSunked = boardObject.haveAllShipsSunked();
 
-    if (this.currentTurn === target && !haveAllShipsSunked) {
-      const hitSuccesful = boardObject.receiveAttack([
-        parseInt(cell.dataset.x),
-        parseInt(cell.dataset.y),
-      ]);
+    if (!this.currentTurn === target && haveAllShipsSunked) return;
+    const hitSuccesful = boardObject.receiveAttack([
+      parseInt(cell.dataset.x),
+      parseInt(cell.dataset.y),
+    ]);
 
-      this.updateCellsOnHitOrMiss(boardObject, board);
+    this.updateCellsClassesOnHitOrMiss(boardObject, board);
 
-      haveAllShipsSunked = boardObject.haveAllShipsSunked();
-      if (haveAllShipsSunked) {
-        // TODO: make something here to prevent further clicking?
-        this.handleAllShipsSunked(board);
-      }
-
-      if (!hitSuccesful) {
-        this.switchTurnFrom(target);
-
-        if (isEnemyCPU) {
-          const cpuBoard = boardObject; // If in cpu mode, the player board will actually be the cpu
-          this.handleCPUTurn(
-            this.getBoardWithTarget("player"),
-            cpuBoard,
-            realPlayerBoardObject,
-          );
-        }
-      }
-      cell.removeEventListener("pointerdown", this.cellClickEventHandler);
+    haveAllShipsSunked = boardObject.haveAllShipsSunked();
+    if (haveAllShipsSunked) {
+      // TODO: make something here to prevent further clicking?
+      this.handleAllShipsSunked(board);
     }
+
+    if (!hitSuccesful) {
+      this.switchTurnFrom(target);
+
+      if (isEnemyCPU) {
+        const cpuBoard = boardObject; // If in cpu mode, the player board will actually be the cpu
+        this.handleCPUTurn(
+          this.getBoardWithTarget("player"),
+          cpuBoard,
+          realPlayerBoardObject,
+        );
+      }
+    }
+    cell.removeEventListener("pointerdown", this.cellClickEventHandler);
   }
 
   addClickListenersToCells(
@@ -184,7 +184,7 @@ export default class DomHandler {
 
     const hitSuccesful = realPlayerBoardObject.receiveRandomHit();
 
-    this.updateCellsOnHitOrMiss(realPlayerBoardObject, board);
+    this.updateCellsClassesOnHitOrMiss(realPlayerBoardObject, board);
 
     haveAllShipsSunked = realPlayerBoardObject.haveAllShipsSunked();
     if (haveAllShipsSunked) this.handleAllShipsSunked(board);
@@ -216,7 +216,6 @@ export default class DomHandler {
   }
 
   shipPlacementSelectionScreen(playerBoard) {
-
     const dialog = document.querySelector(
       ".js-dialog--single-player-ship-placement-dialog",
     );
@@ -228,11 +227,6 @@ export default class DomHandler {
     const form = document.querySelector(".js-single-ship-dialog");
     form.append(tableBoard);
 
-
-    playerBoard.populateBoardWithRandomShips();
-    this.colorOccupiedCells( playerBoard.getPlacedShipsCoordinates(), "player", tableBoard);
-    dialog.show();
-
     const randomizeBoard = () => {
       playerBoard.populateBoardWithRandomShips();
       this.colorOccupiedCells(
@@ -241,6 +235,9 @@ export default class DomHandler {
         tableBoard,
       );
     };
+    randomizeBoard();
+    dialog.show();
+
 
     const randomizeButton = document.querySelector(".js-randomize-button");
     randomizeButton.addEventListener("pointerdown", randomizeBoard);
